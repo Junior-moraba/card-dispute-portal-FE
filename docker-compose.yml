@@ -1,0 +1,11 @@
+services:
+  card-dispute-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    container_name: card-dispute-portal
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production

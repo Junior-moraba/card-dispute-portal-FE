@@ -15,7 +15,7 @@ interface SocialLink {
 
 const Footer: React.FC<FooterProps> = ({ 
   companyName = "Capitec Bank", 
-  logoSrc = "/icons/capitecLogo.svg", 
+  logoSrc = "/icons/capitecLogoB&W.svg", 
   logoAlt = "Company Logo" 
 }) => {
   const socialLinks: SocialLink[] = [

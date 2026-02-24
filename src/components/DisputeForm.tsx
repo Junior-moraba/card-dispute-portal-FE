@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type Transaction } from '../models/TransactionObjects';
-import { DisputeReason, DisputeStatus } from '../models/DisputeObjects';
+import { DisputeReason } from '../models/DisputeObjects';
 
 export interface DisputeFormData {
   reasonCode: DisputeReason | '';

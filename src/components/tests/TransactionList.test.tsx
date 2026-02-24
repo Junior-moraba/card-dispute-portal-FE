@@ -5,12 +5,12 @@ import TransactionList from '../TransactionList';
 import { TransactionStatus } from '../../models/TransactionObjects';
 
 const mockTransactions = [
-  { id: '1', date: '2024-01-15', merchant: { name: 'Amazon', category: 'Retail' }, amount: 1299.99, currency: 'ZAR', status: TransactionStatus.Completed },
-  { id: '2', date: '2024-01-14', merchant: { name: 'Woolworths', category: 'Groceries' }, amount: 450.50, currency: 'ZAR', status: TransactionStatus.Completed },
-  { id: '3', date: '2024-01-13', merchant: { name: 'Uber', category: 'Transport' }, amount: 85.00, currency: 'ZAR', status: TransactionStatus.Disputed },
-  { id: '4', date: '2024-01-12', merchant: { name: 'Netflix', category: 'Entertainment' }, amount: 199.00, currency: 'ZAR', status: TransactionStatus.Completed },
-  { id: '5', date: '2024-01-11', merchant: { name: 'Takealot', category: 'Retail' }, amount: 2500.00, currency: 'ZAR', status: TransactionStatus.Completed },
-  { id: '6', date: '2024-01-10', merchant: { name: 'Checkers', category: 'Groceries' }, amount: 350.00, currency: 'ZAR', status: TransactionStatus.Completed },
+  { id: '1', date: '2024-01-15', merchant: { name: 'Amazon', category: 'Retail' },reference: "monthly subscription", amount: 1299.99, currency: 'ZAR', status: TransactionStatus.Completed },
+  { id: '2', date: '2024-01-14', merchant: { name: 'Woolworths', category: 'Groceries' },reference: "Woolies cafe", amount: 450.50, currency: 'ZAR', status: TransactionStatus.Completed },
+  { id: '3', date: '2024-01-13', merchant: { name: 'Uber', category: 'Transport' },reference: "UberPlus", amount: 85.00, currency: 'ZAR', status: TransactionStatus.Disputed },
+  { id: '4', date: '2024-01-12', merchant: { name: 'Netflix', category: 'Entertainment' },reference: "monthly subscription", amount: 199.00, currency: 'ZAR', status: TransactionStatus.Completed },
+  { id: '5', date: '2024-01-11', merchant: { name: 'Takealot', category: 'Retail' },reference: "Take1021", amount: 2500.00, currency: 'ZAR', status: TransactionStatus.Completed },
+  { id: '6', date: '2024-01-10', merchant: { name: 'Checkers', category: 'Groceries' },reference: "Sixty60-232ls", amount: 350.00, currency: 'ZAR', status: TransactionStatus.Completed },
 ];
 
 describe('TransactionList', () => {

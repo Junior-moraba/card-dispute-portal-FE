@@ -43,3 +43,17 @@ npm install
 npm run dev
 ```
 4. Open your browser and navigate to http://localhost:5173
+
+
+## Docker
+1. Build and start
+docker-compose up -d
+
+2. View logs
+docker-compose logs -f
+
+3. Stop
+docker-compose down
+
+4. Rebuild
+docker-compose up -d --build
