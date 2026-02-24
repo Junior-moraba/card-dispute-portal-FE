@@ -23,26 +23,28 @@ function Home() {
     setSelectedTransaction(transaction);
   };
 
-  const handleSubmitDispute = (reason: string, description: string) => {
-    if (selectedTransaction) {
-      const dispute: Dispute = {
-        transactionId: selectedTransaction.id,
-        reasonCode: DisputeReason[reason as keyof typeof DisputeReason],
-        details: description,
-        status: DisputeStatus.Pending,
-        estimatedResolutionDate: getEstimatedResolutionDate(),
-        submittedAt: new Date().toISOString(),
-      };
-      
-      setDisputes([...disputes, dispute]);
-      setTransactions(transactions.map(t => 
-        t.id === selectedTransaction.id ? { ...t, status: TransactionStatus.Disputed } : t
-      ));
-      setSelectedTransaction(null);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
-    }
-  };
+  const handleSubmitDispute = (formData: { reasonCode: DisputeReason; details: string; evidenceAttached: boolean }) => {
+  if (selectedTransaction) {
+    const dispute: Dispute = {
+      transactionId: selectedTransaction.id,
+      reasonCode: formData.reasonCode,
+      details: formData.details,
+      evidenceAttached: formData.evidenceAttached,
+      status: DisputeStatus.Pending,
+      estimatedResolutionDate: getEstimatedResolutionDate(),
+      submittedAt: new Date().toISOString(),
+    };
+    
+    setDisputes([...disputes, dispute]);
+    setTransactions(transactions.map(t => 
+      t.id === selectedTransaction.id ? { ...t, status: TransactionStatus.Disputed } : t
+    ));
+    setSelectedTransaction(null);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  }
+};
+
 
   const getEstimatedResolutionDate = () => {
     const date = new Date();
@@ -67,7 +69,7 @@ function Home() {
       {selectedTransaction ? (
         <DisputeForm
           transaction={selectedTransaction}
-          onSubmit={handleSubmitDispute}
+          onSubmit={()=>handleSubmitDispute}
           onCancel={() => setSelectedTransaction(null)}
         />
       ) : (
