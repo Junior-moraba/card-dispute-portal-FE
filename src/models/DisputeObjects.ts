@@ -1,9 +1,9 @@
 export interface Dispute {
-  id: string;
+  id?: string;
   transactionId: string;
   reasonCode: DisputeReason;
   details: string;
-  evidenceAttached: boolean;
+  evidenceAttached?: boolean;
   status: DisputeStatus;
   submittedAt: string;
   estimatedResolutionDate: string;
