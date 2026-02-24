@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import TransactionList from '../components/TransactionList';
-import DisputeForm from '../components/DisputeForm';
-import { TransactionStatus, type Transaction } from '../models/TransactionObjects';
-import { DisputeReason, DisputeStatus, type Dispute } from '../models/DisputeObjects';
+import TransactionList from '../../components/TransactionList';
+import DisputeForm from '../../components/DisputeForm';
+import { TransactionStatus, type Transaction } from '../../models/TransactionObjects';
+import { DisputeReason, DisputeStatus, type Dispute } from '../../models/DisputeObjects';
 
 
 const mockTransactions: Transaction[] = [

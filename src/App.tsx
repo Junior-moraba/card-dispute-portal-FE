@@ -2,7 +2,7 @@
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
-import Home from './pages/Home';
+import Home from './pages/Home/Home';
 import DisputeList from './components/DisputeList';
 
 function App() {
