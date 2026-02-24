@@ -14,7 +14,7 @@ interface SocialLink {
 }
 
 const Footer: React.FC<FooterProps> = ({ 
-  companyName = "Your Company", 
+  companyName = "Capitec Bank", 
   logoSrc = "/icons/capitecLogo.svg", 
   logoAlt = "Company Logo" 
 }) => {
@@ -42,7 +42,7 @@ const Footer: React.FC<FooterProps> = ({
   ];
 
   return (
-    <footer className="bg-gray-800 flex w-full flex-col text-white py-8 px-4">
+    <footer className="bg-gray-800 flex min-w-screen flex-col text-white py-8 px-4">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
         {/* Company Logo Section */}
         <div className="flex items-center mb-4 md:mb-0">
@@ -51,7 +51,7 @@ const Footer: React.FC<FooterProps> = ({
             alt={logoAlt} 
             className="h-10 w-auto mr-3"
           />
-          <span className="text-xl font-bold">{companyName}</span>
+    
         </div>
 
         {/* Social Media Links */}
@@ -70,6 +70,18 @@ const Footer: React.FC<FooterProps> = ({
           ))}
         </div>
       </div>
+
+      {/* Scam Warning Section */}
+        <div className="max-w-6xl mx-auto mt-6 pt-4 border-t border-gray-700">
+            <div className="bg-yellow-900 border border-yellow-600 rounded-lg p-4 text-center">
+                <p className="font-semibold text-yellow-200 mb-2">⚠️ Beware of Scams</p>
+                <p className="text-sm text-gray-300">
+                We will never ask for your PIN, password, or OTP via email, SMS, or phone call. 
+                If you're uncertain about any communication, contact us directly at 0860 10 20 43 or visit your nearest branch.
+                </p>
+            </div>
+        </div>
+
 
       {/* Copyright Section */}
       <div className="max-w-6xl mx-auto mt-6 pt-4 border-t border-gray-700 text-center text-sm text-gray-400">

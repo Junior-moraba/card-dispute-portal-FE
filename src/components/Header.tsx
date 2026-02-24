@@ -12,9 +12,8 @@ const Header: React.FC<HeaderProps> = ({
   logoAlt = 'Logo', 
   menuItems = [
     { label: 'Home', href: '/' },
+    { label: 'Disputes', href: '/disputes' },
     { label: 'About', href: '/about' },
-    { label: 'Services', href: '/services' },
-    { label: 'Contact', href: '/contact' }
   ]
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,7 +23,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="bg-white flex w-full shadow-md">
+    <header className="bg-white flex min-w-screen shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center">
