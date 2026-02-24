@@ -53,7 +53,7 @@ function Home() {
   
 
   return (
-    <div className="app">
+    <div className="min-h-screen w-full gap-10 flex flex-col items-center p-4">
       <header>
         <p className='text-5xl font-bold'>Card Dispute Portal</p>
       </header>

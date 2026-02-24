@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+
+.transaction-list table {
+  @apply w-full border-collapse border border-gray-300;
+}
+
+.transaction-list th {
+  @apply border border-gray-300 px-4 py-2 text-left bg-gray-100;
+}
+
+.transaction-list td {
+  @apply border border-gray-300 px-4 py-2;
+}
+
+.transaction-list tr:hover {
+  @apply bg-gray-50;
+}
