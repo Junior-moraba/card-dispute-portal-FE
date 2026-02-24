@@ -51,6 +51,10 @@ export default function DisputeForm({ transaction, onSubmit, onCancel }: Props) 
           <p id="merchantCategory">{transaction.merchant.category}</p>
         </div>
         <div className='flex flex-row gap-2'> 
+          <label htmlFor="merchantReference" className='font-bold'>Reference:</label> 
+          <p id="merchantReference">{transaction.reference}</p>
+        </div>
+        <div className='flex flex-row gap-2'> 
           <label htmlFor="transactionAmount" className='font-bold'>Amount:</label> 
           <p id="transactionAmount">R {transaction.amount.toFixed(2)}</p>
         </div>
@@ -63,7 +67,7 @@ export default function DisputeForm({ transaction, onSubmit, onCancel }: Props) 
         <div className="flex gap-2">
           <label className='font-bold' htmlFor="reason">Reason:</label>
           <select 
-              className='border border-blue-600 rounded-md p-2' 
+              className='border w-full border-blue-600 rounded-md p-2' 
               id="reason" 
               value={formData.reasonCode} 
               onChange={(e) => setFormData({...formData, reasonCode: e.target.value as DisputeReason})} 
@@ -77,7 +81,7 @@ export default function DisputeForm({ transaction, onSubmit, onCancel }: Props) 
 
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="description">Description (min 10 characters)</label>
+          <label className='font-bold' htmlFor="description">Description (min 10 characters)</label>
           <textarea
             id="description"
             value={formData.details}

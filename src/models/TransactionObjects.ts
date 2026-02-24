@@ -5,6 +5,7 @@ export interface Transaction {
   amount: number;
   currency: string;
   status: TransactionStatus;
+  reference: string;
 }
 
 
@@ -15,7 +16,7 @@ export interface Merchant {
 }
 
 export enum TransactionStatus{
-  Completed = 'completed',
-  Pending = 'pending',
-  Disputed = 'disputed'
+  Completed = 'Completed',
+  Pending = 'Pending',
+  Disputed = 'Disputed'
 }

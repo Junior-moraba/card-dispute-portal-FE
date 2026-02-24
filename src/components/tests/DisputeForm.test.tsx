@@ -11,6 +11,7 @@ const mockTransaction: Transaction = {
   merchant: { name: 'Amazon', category: 'Retail' },
   amount: 1299.99,
   currency: 'ZAR',
+  reference: 'Laptop - Dell XPS 15',
   status: TransactionStatus.Completed
 };
 

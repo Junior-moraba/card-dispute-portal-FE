@@ -6,12 +6,14 @@ import { DisputeReason, DisputeStatus, type Dispute } from '../../models/Dispute
 
 
 const mockTransactions: Transaction[] = [
-  { id: '1', date: '2024-01-15', merchant: { name: 'Amazon', category: 'Retail' }, amount: 1299.99, currency: 'ZAR', status: TransactionStatus.Completed },
-  { id: '2', date: '2024-01-14', merchant: { name: 'Woolworths', category: 'Groceries' }, amount: 450.50, currency: 'ZAR', status: TransactionStatus.Completed },
-  { id: '3', date: '2024-01-13', merchant: { name: 'Uber', category: 'Transport' }, amount: 85.00, currency: 'ZAR', status: TransactionStatus.Completed },
-  { id: '4', date: '2024-01-12', merchant: { name: 'Netflix', category: 'Entertainment' }, amount: 199.00, currency: 'ZAR', status: TransactionStatus.Completed },
-  { id: '5', date: '2024-01-11', merchant: { name: 'Takealot', category: 'Retail' }, amount: 2500.00, currency:'ZAR' , status: TransactionStatus.Completed },
+  { id: '1', date: '2024-01-15', merchant: { name: 'Amazon', category: 'Retail' }, amount: 1299.99, currency: 'ZAR', status: TransactionStatus.Completed, reference: 'Laptop - Dell XPS 15' },
+  { id: '2', date: '2024-01-14', merchant: { name: 'Woolworths', category: 'Groceries' }, amount: 450.50, currency: 'ZAR', status: TransactionStatus.Completed, reference: 'Groceries - Weekly shopping' },
+  { id: '3', date: '2024-01-13', merchant: { name: 'Uber', category: 'Transport' }, amount: 85.00, currency: 'ZAR', status: TransactionStatus.Completed, reference: 'Ride to Airport' },
+  { id: '4', date: '2024-01-12', merchant: { name: 'Netflix', category: 'Entertainment' }, amount: 199.00, currency: 'ZAR', status: TransactionStatus.Completed, reference: 'Monthly Subscription' },
+  { id: '5', date: '2024-01-11', merchant: { name: 'Takealot', category: 'Retail' }, amount: 2500.00, currency:'ZAR' , status: TransactionStatus.Completed, reference: 'Samsung TV 55"' },
+  { id: '6', date: '2024-01-10', merchant: { name: 'Game', category: 'Entertainment' }, amount: 350.75, currency:'ZAR' , status: TransactionStatus.Completed, reference: 'Gaming Console - PlayStation 5' },
 ];
+
 
 function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>(mockTransactions);
@@ -55,7 +57,7 @@ function Home() {
   
 
   return (
-    <div className="min-h-screen w-full gap-10 flex flex-col items-center p-4">
+    <div className="min-h-screen w-full gap-4 flex flex-col items-center p-4">
       <header>
         <p className='text-5xl font-bold'>Card Dispute Portal</p>
       </header>

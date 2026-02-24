@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { type Transaction } from '../models/TransactionObjects';
+import { TransactionStatus, type Transaction } from '../models/TransactionObjects';
 
 interface Props {
   transactions: Transaction[];
@@ -33,49 +33,68 @@ export default function TransactionList({ transactions, onDispute }: Props) {
     }
   };
 
+  const getStatusColor = (status: TransactionStatus) => {
+    switch (status) {
+      case TransactionStatus.Completed:
+        return 'bg-green-100 text-green-800';
+      case TransactionStatus.Pending:
+        return 'bg-orange-100 text-orange-800';
+      case TransactionStatus.Disputed:
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   return (
-    <div className="transaction-list flex w-full flex-col p-8 items-center gap-6">
-      <p className='text-2xl w-full text-left font-bold'>Recent Transactions</p>
-      <div className="w-full overflow-x-auto">
-        <table className="min-w-full">
-          <thead>
-            <tr>
-              <th onClick={() => handleSort('date')} className="cursor-pointer">
-                Date {sortField === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th>Merchant</th>
-              <th onClick={() => handleSort('amount')} className="cursor-pointer">
-                Amount {sortField === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedTransactions.map((transaction) => (
-              <tr key={transaction.id}>
-                <td>{new Date(transaction.date).toLocaleDateString()}</td>
-                <td>{transaction.merchant.name}</td>
-                <td className='text-nowrap'>R {transaction.amount.toFixed(2)}</td>
-                <td>
-                  <span className={`status ${transaction.status}`}>
-                    {transaction.status}
-                  </span>
-                </td>
-                <td>
-                  {transaction.status !== 'disputed' && (
-                    <button className='bg-red-400 text-white hover:bg-red-500 px-3 py-1 rounded' onClick={() => onDispute(transaction)}>
-                      Dispute
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="w-full flex flex-col p-8 gap-6">
+      <div className="flex justify-between items-center">
+        <p className='text-2xl font-bold'>Recent Transactions</p>
+        <div className="flex gap-2">
+          <button onClick={() => handleSort('date')} className="px-3 py-1 bg-gray-200 rounded text-sm">
+            Date {sortField === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
+          </button>
+          <button onClick={() => handleSort('amount')} className="px-3 py-1 bg-gray-200 rounded text-sm">
+            Amount {sortField === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
+          </button>
+        </div>
       </div>
+
+      <div className="space-y-4">
+        {paginatedTransactions.map((transaction, index) => (
+          <div key={transaction.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-blue-100'} border border-gray-300 rounded-lg p-4 shadow-sm`}>
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex-1">
+              <p className="font-bold text-lg">{transaction.merchant.name}</p>
+              <p className="text-sm text-gray-600">{transaction.reference}</p>
+              <p className="text-xs text-gray-500">{new Date(transaction.date).toLocaleDateString()}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-xs text-gray-500 font-medium">Status:</span>
+                <span className={`px-2 py-1 rounded-full text-xs font-semibold border-2 ${getStatusColor(transaction.status)}`}>
+                  {transaction.status}
+                </span>
+              </div>
+            </div>
+
+            </div>
+
+            <div className="flex justify-between items-center mt-3">
+              <p className="text-xl font-bold">R {transaction.amount.toFixed(2)}</p>
+              {transaction.status === TransactionStatus.Completed && (
+                <button 
+                  className='bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded font-semibold' 
+                  onClick={() => onDispute(transaction)}
+                >
+                  Dispute
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
       
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center justify-center">
         <button 
           onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
           disabled={currentPage === 1}
