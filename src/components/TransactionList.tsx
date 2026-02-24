@@ -36,42 +36,44 @@ export default function TransactionList({ transactions, onDispute }: Props) {
   return (
     <div className="transaction-list flex w-full flex-col p-8 items-center gap-6">
       <p className='text-2xl w-full text-left font-bold'>Recent Transactions</p>
-      <table>
-        <thead>
-          <tr>
-            <th onClick={() => handleSort('date')} className="cursor-pointer">
-              Date {sortField === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
-            </th>
-            <th>Merchant</th>
-            <th onClick={() => handleSort('amount')} className="cursor-pointer">
-              Amount {sortField === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
-            </th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedTransactions.map((transaction) => (
-            <tr key={transaction.id}>
-              <td>{new Date(transaction.date).toLocaleDateString()}</td>
-              <td>{transaction.merchant.name}</td>
-              <td>R {transaction.amount.toFixed(2)}</td>
-              <td>
-                <span className={`status ${transaction.status}`}>
-                  {transaction.status}
-                </span>
-              </td>
-              <td>
-                {transaction.status !== 'disputed' && (
-                  <button className='bg-red-400 text-white hover:bg-red-500 px-3 py-1 rounded' onClick={() => onDispute(transaction)}>
-                    Dispute
-                  </button>
-                )}
-              </td>
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full">
+          <thead>
+            <tr>
+              <th onClick={() => handleSort('date')} className="cursor-pointer">
+                Date {sortField === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
+              </th>
+              <th>Merchant</th>
+              <th onClick={() => handleSort('amount')} className="cursor-pointer">
+                Amount {sortField === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
+              </th>
+              <th>Status</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedTransactions.map((transaction) => (
+              <tr key={transaction.id}>
+                <td>{new Date(transaction.date).toLocaleDateString()}</td>
+                <td>{transaction.merchant.name}</td>
+                <td className='text-nowrap'>R {transaction.amount.toFixed(2)}</td>
+                <td>
+                  <span className={`status ${transaction.status}`}>
+                    {transaction.status}
+                  </span>
+                </td>
+                <td>
+                  {transaction.status !== 'disputed' && (
+                    <button className='bg-red-400 text-white hover:bg-red-500 px-3 py-1 rounded' onClick={() => onDispute(transaction)}>
+                      Dispute
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       
       <div className="flex gap-2 items-center">
         <button 

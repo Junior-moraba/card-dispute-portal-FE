@@ -35,52 +35,65 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="bg-white flex min-w-screen shadow-md">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="flex items-center">
-          <img 
-            onClick={goHome} 
-            src={logoSrc} 
-            alt={logoAlt} 
-            className="h-8 w-auto cursor-pointer" 
-          />
-        </div>
+    <>
+      <header className="bg-white w-full flex min-w-screen shadow-md relative z-50">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="flex items-center">
+            <img 
+              onClick={goHome} 
+              src={logoSrc} 
+              alt={logoAlt} 
+              className="h-8 w-auto cursor-pointer" 
+            />
+          </div>
 
-        <nav className="hidden md:flex space-x-6 items-center">
-          {menuItems.map((item, index) => (
+          <nav className="hidden md:flex space-x-6 items-center">
+            {menuItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => goTo(item.href)}
+                className={`transition-colors duration-200 ${
+                  isActive(item.href) 
+                    ? 'text-blue-600 font-semibold' 
+                    : 'text-gray-700 hover:text-blue-600'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
             <button
-              key={index}
-              onClick={() => goTo(item.href)}
-              className={`transition-colors duration-200 ${
-                isActive(item.href) 
-                  ? 'text-blue-600 font-semibold' 
-                  : 'text-gray-700 hover:text-blue-600'
-              }`}
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
             >
-              {item.label}
+              Logout
             </button>
-          ))}
+          </nav>
+
           <button
-            onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            onClick={toggleMenu}
+            className="md:hidden flex flex-col justify-center items-center w-6 h-6 space-y-1 z-50"
+            aria-label="Toggle menu"
           >
-            Logout
+            <span className={`block w-5 h-0.5 bg-gray-700 transition-transform duration-300 ${isMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
+            <span className={`block w-5 h-0.5 bg-gray-700 transition-opacity duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`block w-5 h-0.5 bg-gray-700 transition-transform duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
           </button>
-        </nav>
+        </div>
+      </header>
 
-        <button
-          onClick={toggleMenu}
-          className="md:hidden flex flex-col justify-center items-center w-6 h-6 space-y-1"
-          aria-label="Toggle menu"
-        >
-          <span className={`block w-5 h-0.5 bg-gray-700 transition-transform duration-300 ${isMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-          <span className={`block w-5 h-0.5 bg-gray-700 transition-opacity duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></span>
-          <span className={`block w-5 h-0.5 bg-gray-700 transition-transform duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
-        </button>
-      </div>
+      {/* Overlay */}
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
 
-      <div className={`md:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
-        <nav className="px-4 py-2 bg-gray-50">
+      {/* Slide-in Menu */}
+      <div className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 transform transition-transform duration-300 ease-in-out md:hidden ${
+        isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <nav className="px-4 py-16">
           {menuItems.map((item, index) => (
             <button
               key={index}
@@ -88,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({
                 goTo(item.href);
                 setIsMenuOpen(false);
               }}
-              className={`block w-full text-left py-2 transition-colors duration-200 ${
+              className={`block w-full text-left py-3 transition-colors duration-200 ${
                 isActive(item.href)
                   ? 'text-blue-600 font-semibold'
                   : 'text-gray-700 hover:text-blue-600'
@@ -98,14 +111,17 @@ const Header: React.FC<HeaderProps> = ({
             </button>
           ))}
           <button
-            onClick={handleLogout}
-            className="w-full text-left py-2 text-red-600 hover:text-red-700"
+            onClick={() => {
+              handleLogout();
+              setIsMenuOpen(false);
+            }}
+            className="w-full text-left py-3 text-red-600 hover:text-red-700"
           >
             Logout
           </button>
         </nav>
       </div>
-    </header>
+    </>
   );
 };
 
