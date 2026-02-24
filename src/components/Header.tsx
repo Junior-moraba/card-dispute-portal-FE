@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigation } from '../utils/navigation';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 interface HeaderProps {
   logoSrc?: string;
@@ -20,12 +21,18 @@ const Header: React.FC<HeaderProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { goTo, goHome } = useNavigation();
   const location = useLocation();
+  const { logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const isActive = (href: string) => location.pathname === href;
+
+  const handleLogout = () => {
+    logout();
+    goTo('/login');
+  };
 
   return (
     <header className="bg-white flex min-w-screen shadow-md">
@@ -39,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
 
-        <nav className="hidden md:flex space-x-6">
+        <nav className="hidden md:flex space-x-6 items-center">
           {menuItems.map((item, index) => (
             <button
               key={index}
@@ -53,6 +60,12 @@ const Header: React.FC<HeaderProps> = ({
               {item.label}
             </button>
           ))}
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Logout
+          </button>
         </nav>
 
         <button
@@ -84,6 +97,12 @@ const Header: React.FC<HeaderProps> = ({
               {item.label}
             </button>
           ))}
+          <button
+            onClick={handleLogout}
+            className="w-full text-left py-2 text-red-600 hover:text-red-700"
+          >
+            Logout
+          </button>
         </nav>
       </div>
     </header>
