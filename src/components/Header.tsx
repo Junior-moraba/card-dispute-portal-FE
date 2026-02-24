@@ -1,5 +1,6 @@
-
 import React, { useState } from 'react';
+import { useNavigation } from '../utils/navigation';
+import { useLocation } from 'react-router-dom';
 
 interface HeaderProps {
   logoSrc?: string;
@@ -17,33 +18,43 @@ const Header: React.FC<HeaderProps> = ({
   ]
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { goTo, goHome } = useNavigation();
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const isActive = (href: string) => location.pathname === href;
+
   return (
     <header className="bg-white flex min-w-screen shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Logo */}
         <div className="flex items-center">
-          <img src={logoSrc} alt={logoAlt} className="h-8 w-auto" />
+          <img 
+            onClick={goHome} 
+            src={logoSrc} 
+            alt={logoAlt} 
+            className="h-8 w-auto cursor-pointer" 
+          />
         </div>
 
-        {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-6">
           {menuItems.map((item, index) => (
-            <a
+            <button
               key={index}
-              href={item.href}
-              className="text-gray-700 hover:text-blue-600 transition-colors duration-200"
+              onClick={() => goTo(item.href)}
+              className={`transition-colors duration-200 ${
+                isActive(item.href) 
+                  ? 'text-blue-600 font-semibold' 
+                  : 'text-gray-700 hover:text-blue-600'
+              }`}
             >
               {item.label}
-            </a>
+            </button>
           ))}
         </nav>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={toggleMenu}
           className="md:hidden flex flex-col justify-center items-center w-6 h-6 space-y-1"
@@ -55,18 +66,23 @@ const Header: React.FC<HeaderProps> = ({
         </button>
       </div>
 
-      {/* Mobile Menu */}
       <div className={`md:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
         <nav className="px-4 py-2 bg-gray-50">
           {menuItems.map((item, index) => (
-            <a
+            <button
               key={index}
-              href={item.href}
-              className="block py-2 text-gray-700 hover:text-blue-600 transition-colors duration-200"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => {
+                goTo(item.href);
+                setIsMenuOpen(false);
+              }}
+              className={`block w-full text-left py-2 transition-colors duration-200 ${
+                isActive(item.href)
+                  ? 'text-blue-600 font-semibold'
+                  : 'text-gray-700 hover:text-blue-600'
+              }`}
             >
               {item.label}
-            </a>
+            </button>
           ))}
         </nav>
       </div>
