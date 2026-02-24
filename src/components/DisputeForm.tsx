@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type Transaction } from '../models/TransactionObjects';
-import { DisputeReason } from '../models/DisputeObjects';
+import { DisputeReason, DisputeStatus } from '../models/DisputeObjects';
 
 export interface DisputeFormData {
   reasonCode: DisputeReason | '';
@@ -9,6 +9,7 @@ export interface DisputeFormData {
   evidenceFiles?: File[];
 }
 
+const reasonOptions = DisputeReason;
 interface Props {
   transaction: Transaction;
   onSubmit: (formData: DisputeFormData) => void;
@@ -38,8 +39,8 @@ export default function DisputeForm({ transaction, onSubmit, onCancel }: Props) 
   };
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-6 rounded-lg bg-white p-6 shadow-md">
-      <h2>Dispute Transaction</h2>
+    <div className="flex w-full max-w-md flex-col gap-6 rounded-lg bg-gray-100 p-6 shadow-lg">
+      <p className="text-4xl font-bold">Dispute Transaction</p>
       <div className="transaction-details">
         <div className='flex flex-row gap-2'> 
           <label htmlFor="merchantName" className='font-bold'>Merchant:</label> 
@@ -62,21 +63,18 @@ export default function DisputeForm({ transaction, onSubmit, onCancel }: Props) 
         <div className="flex gap-2">
           <label className='font-bold' htmlFor="reason">Reason:</label>
           <select 
-            className='border border-blue-600 rounded-md p-2' 
-            id="reason" 
-            value={formData.reasonCode} 
-            onChange={(e) => setFormData({...formData, reasonCode: e.target.value as DisputeReason})} 
-            required
-          >
-            <option value="">Select a reason</option>
-            <option value={DisputeReason.Unauthorized}>Unauthorized Transaction</option>
-            <option value={DisputeReason.Duplicate}>Duplicate Charge</option>
-            <option value={DisputeReason.IncorrectAmount}>Incorrect Amount</option>
-            <option value={DisputeReason.NotReceived}>Product/Service Not Received</option>
-            <option value={DisputeReason.Fraudulent}>Fraudulent Transaction</option>
-            <option value={DisputeReason.Cancelled}>Cancelled Service</option>
-            <option value={DisputeReason.Other}>Other</option>
-          </select>
+              className='border border-blue-600 rounded-md p-2' 
+              id="reason" 
+              value={formData.reasonCode} 
+              onChange={(e) => setFormData({...formData, reasonCode: e.target.value as DisputeReason})} 
+              required
+            >
+              <option value="">Select a reason</option>
+              {Object.entries(reasonOptions).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="description">Description (min 10 characters)</label>

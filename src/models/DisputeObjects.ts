@@ -10,18 +10,18 @@ export interface Dispute {
 }
 
 export enum DisputeStatus {
-  Pending = 'pending',
-  UnderReview = 'under_review',
-  Resolved = 'resolved',
-  Rejected = 'rejected'
+  Pending = 'Dispute Pending',
+  UnderReview = 'Dispute Under Review by agents',
+  Resolved = 'Dispute Resolved',
+  Rejected = 'Dispute Rejected'
 }
 
 export enum DisputeReason {
-  Unauthorized = 'UNAUTH',
-  Duplicate = 'DUP',
-  IncorrectAmount = 'INCAMT',
-  NotReceived = 'NOTREC',
-  Fraudulent = 'FRAUD',
-  Cancelled = 'CANCEL',
+  Unauthorized = 'Unauthorized Transaction',
+  Duplicate = 'Duplicate Charge',
+  IncorrectAmount = 'Incorrect Amount',
+  NotReceived = 'Product/Service Not Received',
+  Fraudulent = 'Fraudulent Transaction',
+  Cancelled = 'Cancelled Service',
   Other = 'OTHER'
 }
