@@ -6,6 +6,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   phoneNumber: string | null;
   userId: string | null;
+  isLoading: boolean;
   login: (token: string, phone: string, userId: string) => void;
   logout: () => Promise<void>;
   sendOtp: (phone: string) => Promise<void>;
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = sessionStorage.getItem('authToken');
@@ -28,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setPhoneNumber(phone);
       setUserId(id);
     }
+    setIsLoading(false);
   }, []);
 
   const login = (token: string, phone: string, userId: string) => {
@@ -67,6 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAuthenticated, 
       phoneNumber, 
       userId,
+      isLoading,
       login, 
       logout, 
       sendOtp, 
