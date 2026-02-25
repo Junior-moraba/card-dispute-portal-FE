@@ -1,60 +1,93 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TransactionList from '../../components/TransactionList';
-import DisputeForm from '../../components/DisputeForm';
-import { TransactionStatus, type Transaction } from '../../models/TransactionObjects';
+import DisputeForm, { type DisputeFormData } from '../../components/DisputeForm';
+import { TransactionStatus, type Transaction, type TransactionListData } from '../../models/TransactionObjects';
 import { DisputeReason, DisputeStatus, type Dispute } from '../../models/DisputeObjects';
-
-
-const mockTransactions: Transaction[] = [
-  { id: '1', date: '2024-01-15', merchant: { name: 'Amazon', category: 'Retail' }, amount: 1299.99, currency: 'ZAR', status: TransactionStatus.Completed, reference: 'Laptop - Dell XPS 15' },
-  { id: '2', date: '2024-01-14', merchant: { name: 'Woolworths', category: 'Groceries' }, amount: 450.50, currency: 'ZAR', status: TransactionStatus.Completed, reference: 'Groceries - Weekly shopping' },
-  { id: '3', date: '2024-01-13', merchant: { name: 'Uber', category: 'Transport' }, amount: 85.00, currency: 'ZAR', status: TransactionStatus.Completed, reference: 'Ride to Airport' },
-  { id: '4', date: '2024-01-12', merchant: { name: 'Netflix', category: 'Entertainment' }, amount: 199.00, currency: 'ZAR', status: TransactionStatus.Completed, reference: 'Monthly Subscription' },
-  { id: '5', date: '2024-01-11', merchant: { name: 'Takealot', category: 'Retail' }, amount: 2500.00, currency:'ZAR' , status: TransactionStatus.Completed, reference: 'Samsung TV 55"' },
-  { id: '6', date: '2024-01-10', merchant: { name: 'Game', category: 'Entertainment' }, amount: 350.75, currency:'ZAR' , status: TransactionStatus.Completed, reference: 'Gaming Console - PlayStation 5' },
-];
-
+import { transactionService } from '../../services/transactionService';
+import { useAuth } from '../../context/AuthContext';
 
 function Home() {
-  const [transactions, setTransactions] = useState<Transaction[]>(mockTransactions);
+  const [transactions, setTransactions] = useState<TransactionListData>({} as TransactionListData);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [disputes, setDisputes] = useState<Dispute[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const { userId } = useAuth();
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        setLoading(true);
+        const response = await transactionService.getTransactions({
+          page: 1,
+          limit: 10,
+          sortBy: 'date',
+          sortOrder: 'desc'
+        });
+        setTransactions(response.data);
+      } catch (error) {
+        setError('Failed to load transactions');
+        console.error('Error fetching transactions:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchTransactions();
+    }
+  }, [userId]);
 
   const handleDispute = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
   };
 
-  const handleSubmitDispute = (formData: { reasonCode: DisputeReason; details: string; evidenceAttached: boolean }) => {
-  if (selectedTransaction) {
-    const dispute: Dispute = {
-      transactionId: selectedTransaction.id,
-      reasonCode: formData.reasonCode,
-      details: formData.details,
-      evidenceAttached: formData.evidenceAttached,
-      status: DisputeStatus.Pending,
-      estimatedResolutionDate: getEstimatedResolutionDate(),
-      submittedAt: new Date().toISOString(),
-    };
-    
-    setDisputes([...disputes, dispute]);
-    setTransactions(transactions.map(t => 
-      t.id === selectedTransaction.id ? { ...t, status: TransactionStatus.Disputed } : t
-    ));
-    setSelectedTransaction(null);
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
-  }
-};
-
+  const handleSubmitDispute = (formData: DisputeFormData) => {
+    if (selectedTransaction && formData.reasonCode !== '') {
+      const dispute: Dispute = {
+        transactionId: selectedTransaction.id,
+        reasonCode: formData.reasonCode as DisputeReason,
+        details: formData.details,
+        evidenceAttached: formData.evidenceAttached,
+        status: DisputeStatus.Pending,
+        estimatedResolutionDate: getEstimatedResolutionDate(),
+        submittedAt: new Date().toISOString(),
+      };
+      
+      setDisputes([...disputes, dispute]);
+      setTransactions({
+        ...transactions,
+        items: transactions.items.map(t =>  
+        t.id === selectedTransaction.id ? { ...t, status: TransactionStatus.Disputed } : t
+      )});
+      setSelectedTransaction(null);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    }
+  };
 
   const getEstimatedResolutionDate = () => {
     const date = new Date();
     date.setDate(date.getDate() + 3);
-    return date.toISOString().split('T')[0]; // Return in YYYY-MM-DD format
+    return date.toISOString().split('T')[0];
   };
 
-  
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <p>Loading transactions...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full gap-4 flex flex-col items-center p-4">
@@ -71,12 +104,12 @@ function Home() {
       {selectedTransaction ? (
         <DisputeForm
           transaction={selectedTransaction}
-          onSubmit={()=>handleSubmitDispute}
+          onSubmit={handleSubmitDispute}
           onCancel={() => setSelectedTransaction(null)}
         />
       ) : (
         <TransactionList
-          transactions={transactions}
+          transactionData={transactions}
           onDispute={handleDispute}
         />
       )}

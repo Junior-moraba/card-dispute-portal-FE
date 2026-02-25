@@ -1,18 +1,18 @@
 import { useState } from 'react';
-import { TransactionStatus, type Transaction } from '../models/TransactionObjects';
+import { TransactionStatus, type Transaction, type TransactionListData } from '../models/TransactionObjects';
 
 interface Props {
-  transactions: Transaction[];
+  transactionData: TransactionListData;
   onDispute: (transaction: Transaction) => void;
 }
 
-export default function TransactionList({ transactions, onDispute }: Props) {
+export default function TransactionList({ transactionData, onDispute }: Props) {
   const [sortField, setSortField] = useState<'date' | 'amount'>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const sortedTransactions = [...transactions].sort((a, b) => {
+  const sortedTransactions = [...transactionData.items].sort((a, b) => {
     const multiplier = sortOrder === 'asc' ? 1 : -1;
     if (sortField === 'date') {
       return multiplier * (new Date(a.date).getTime() - new Date(b.date).getTime());

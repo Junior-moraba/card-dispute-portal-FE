@@ -20,3 +20,23 @@ export enum TransactionStatus{
   Pending = 'Pending',
   Disputed = 'Disputed'
 }
+
+
+export interface TransactionListParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface TransactionListResponse {
+    data: TransactionListData;
+    success: boolean;
+}
+
+export interface TransactionListData {
+    items: Transaction[];
+    totalCount: number;
+    page: number;
+    returnedCount: number;
+}
