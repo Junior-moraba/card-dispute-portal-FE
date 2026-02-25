@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import TransactionList from '../../components/TransactionList';
 import DisputeForm, { type DisputeFormData } from '../../components/DisputeForm';
 import { TransactionStatus, type Transaction, type TransactionListData } from '../../models/TransactionObjects';
@@ -14,11 +14,18 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { userId } = useAuth();
-
-  useEffect(() => {
+  const hasFetched = useRef(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState<'date' | 'amount'>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  
+   useEffect(() => {
     const fetchTransactions = async () => {
+      if (hasFetched.current) return;
+      
       try {
         setLoading(true);
+        hasFetched.current = true;
         const response = await transactionService.getTransactions({
           page: 1,
           limit: 10,
@@ -29,6 +36,7 @@ function Home() {
       } catch (error) {
         setError('Failed to load transactions');
         console.error('Error fetching transactions:', error);
+        hasFetched.current = false;
       } finally {
         setLoading(false);
       }
@@ -38,6 +46,46 @@ function Home() {
       fetchTransactions();
     }
   }, [userId]);
+
+  const handlePageChange = async (page: number) => {
+    try {
+      setLoading(true);
+      const response = await transactionService.getTransactions({
+        page,
+        limit: 10,
+        sortBy,
+        sortOrder
+      });
+      setTransactions(response.data);
+      setCurrentPage(page);
+    } catch (error) {
+      setError('Failed to load transactions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSort = async (field: 'date' | 'amount') => {
+    const newSortOrder = sortBy === field && sortOrder === 'desc' ? 'asc' : 'desc';
+    setSortBy(field);
+    setSortOrder(newSortOrder);
+    setCurrentPage(1);
+    
+    try {
+      setLoading(true);
+      const response = await transactionService.getTransactions({
+        page: 1,
+        limit: 10,
+        sortBy: field,
+        sortOrder: newSortOrder
+      });
+      setTransactions(response.data);
+    } catch (error) {
+      setError('Failed to load transactions');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDispute = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
@@ -111,6 +159,11 @@ function Home() {
         <TransactionList
           transactionData={transactions}
           onDispute={handleDispute}
+          onPageChange={handlePageChange}
+          currentPage={currentPage}
+          onSort={handleSort}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
         />
       )}
     </div>

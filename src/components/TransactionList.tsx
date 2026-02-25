@@ -1,37 +1,25 @@
-import { useState } from 'react';
 import { TransactionStatus, type Transaction, type TransactionListData } from '../models/TransactionObjects';
 
 interface Props {
   transactionData: TransactionListData;
   onDispute: (transaction: Transaction) => void;
+  onPageChange: (page: number) => void;
+  currentPage: number;
+  onSort: (field: 'date' | 'amount') => void;
+  sortBy: 'date' | 'amount';
+  sortOrder: 'asc' | 'desc';
 }
 
-export default function TransactionList({ transactionData, onDispute }: Props) {
-  const [sortField, setSortField] = useState<'date' | 'amount'>('date');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
-  const sortedTransactions = [...transactionData.items].sort((a, b) => {
-    const multiplier = sortOrder === 'asc' ? 1 : -1;
-    if (sortField === 'date') {
-      return multiplier * (new Date(a.date).getTime() - new Date(b.date).getTime());
-    }
-    return multiplier * (a.amount - b.amount);
-  });
-
-  const totalPages = Math.ceil(sortedTransactions.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedTransactions = sortedTransactions.slice(startIndex, startIndex + itemsPerPage);
-
-  const handleSort = (field: 'date' | 'amount') => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('desc');
-    }
-  };
+export default function TransactionList({ 
+  transactionData, 
+  onDispute, 
+  onPageChange, 
+  currentPage, 
+  onSort, 
+  sortBy, 
+  sortOrder 
+}: Props) {
+  const totalPages = transactionData.totalPages || 1;
 
   const getStatusColor = (status: TransactionStatus) => {
     switch (status) {
@@ -51,17 +39,17 @@ export default function TransactionList({ transactionData, onDispute }: Props) {
       <div className="flex justify-between items-center">
         <p className='text-2xl font-bold'>Recent Transactions</p>
         <div className="flex gap-2">
-          <button onClick={() => handleSort('date')} className="px-3 py-1 bg-gray-200 rounded text-sm">
-            Date {sortField === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
+          <button onClick={() => onSort('date')} className="px-3 py-1 bg-gray-200 rounded text-sm">
+            Date {sortBy === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
           </button>
-          <button onClick={() => handleSort('amount')} className="px-3 py-1 bg-gray-200 rounded text-sm">
-            Amount {sortField === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
+          <button onClick={() => onSort('amount')} className="px-3 py-1 bg-gray-200 rounded text-sm">
+            Amount {sortBy === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
           </button>
         </div>
       </div>
 
       <div className="space-y-4">
-        {paginatedTransactions.map((transaction, index) => (
+        {transactionData.items?.map((transaction, index) => (
           <div key={transaction.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-blue-100'} border border-gray-300 rounded-lg p-4 shadow-sm`}>
             <div className="flex justify-between items-start mb-2">
               <div className="flex-1">
@@ -96,7 +84,7 @@ export default function TransactionList({ transactionData, onDispute }: Props) {
       
       <div className="flex gap-2 items-center justify-center">
         <button 
-          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
           className="px-3 py-1 bg-blue-500 text-white rounded disabled:bg-gray-300"
         >
@@ -104,7 +92,7 @@ export default function TransactionList({ transactionData, onDispute }: Props) {
         </button>
         <span>Page {currentPage} of {totalPages}</span>
         <button 
-          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
           className="px-3 py-1 bg-blue-500 text-white rounded disabled:bg-gray-300"
         >

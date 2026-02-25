@@ -38,5 +38,6 @@ export interface TransactionListData {
     items: Transaction[];
     totalCount: number;
     page: number;
+    totalPages: number;
     returnedCount: number;
 }
