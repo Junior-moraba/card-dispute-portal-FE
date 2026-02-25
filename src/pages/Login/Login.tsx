@@ -33,7 +33,7 @@ export default function Login() {
     
     try {
       const response = await verifyOtp(phoneNumber, otp);
-      login(response.token, response.phoneNumber);
+      login(response.data.accessToken, response.data.user.phoneNumber, response.data.user.id);
       goHome();
     } catch (error) {
       setError('Invalid OTP. Please try again.');
@@ -41,6 +41,7 @@ export default function Login() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen min-w-screen flex flex-col items-center justify-center p-4 bg-gray-100">

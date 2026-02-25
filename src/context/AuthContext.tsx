@@ -1,13 +1,15 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { authService } from '../services/authService';
+import type { AuthResponse } from '../models/AuthObjects';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   phoneNumber: string | null;
-  login: (token: string, phone: string) => void;
+  userId: string | null;
+  login: (token: string, phone: string, userId: string) => void;
   logout: () => Promise<void>;
   sendOtp: (phone: string) => Promise<void>;
-  verifyOtp: (phone: string, otp: string) => Promise<{ token: string; phoneNumber: string }>;
+  verifyOtp: (phone: string, otp: string) => Promise<AuthResponse>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,21 +17,26 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    const phone = localStorage.getItem('phoneNumber');
-    if (token && phone) {
+    const token = sessionStorage.getItem('authToken');
+    const phone = sessionStorage.getItem('phoneNumber');
+    const id = sessionStorage.getItem('userId');
+    if (token && phone && id) {
       setIsAuthenticated(true);
       setPhoneNumber(phone);
+      setUserId(id);
     }
   }, []);
 
-  const login = (token: string, phone: string) => {
+  const login = (token: string, phone: string, userId: string) => {
     setIsAuthenticated(true);
     setPhoneNumber(phone);
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('phoneNumber', phone);
+    setUserId(userId);
+    sessionStorage.setItem('authToken', token);
+    sessionStorage.setItem('phoneNumber', phone);
+    sessionStorage.setItem('userId', userId);
   };
 
   const logout = async () => {
@@ -40,8 +47,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsAuthenticated(false);
       setPhoneNumber(null);
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('phoneNumber');
+      setUserId(null);
+      sessionStorage.removeItem('authToken');
+      sessionStorage.removeItem('phoneNumber');
+      sessionStorage.removeItem('userId');
     }
   };
 
@@ -57,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider value={{ 
       isAuthenticated, 
       phoneNumber, 
+      userId,
       login, 
       logout, 
       sendOtp, 

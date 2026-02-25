@@ -11,7 +11,7 @@ export const apiRequest = async <T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> => {
-  const token = localStorage.getItem('authToken');
+  const token = sessionStorage.getItem('authToken');
   
   const config: RequestInit = {
     headers: {

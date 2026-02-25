@@ -1,18 +1,6 @@
+import type { AuthResponse, LoginRequest, OtpRequest } from '../models/AuthObjects';
 import { apiRequest } from './api';
 
-interface LoginRequest {
-  phoneNumber: string;
-}
-
-interface OtpRequest {
-  phoneNumber: string;
-  otp: string;
-}
-
-interface AuthResponse {
-  token: string;
-  phoneNumber: string;
-}
 
 export const authService = {
   sendOtp: (request: LoginRequest) =>
