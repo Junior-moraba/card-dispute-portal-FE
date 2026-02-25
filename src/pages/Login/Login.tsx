@@ -6,33 +6,45 @@ export default function Login() {
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
-  const [generatedOtp, setGeneratedOtp] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { login, sendOtp, verifyOtp } = useAuth();
   const { goHome } = useNavigation();
 
-  const handleSendOtp = (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    setGeneratedOtp(code);
-    alert(`Your OTP is: ${code}`);
-    setStep('otp');
+    setLoading(true);
     setError('');
+    
+    try {
+      await sendOtp(phoneNumber);
+      setStep('otp');
+    } catch (error) {
+      setError('Failed to send OTP. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp === generatedOtp) {
-      login(phoneNumber);
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await verifyOtp(phoneNumber, otp);
+      login(response.token, response.phoneNumber);
       goHome();
-    } else {
+    } catch (error) {
       setError('Invalid OTP. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen min-w-screen flex flex-col items-center justify-center p-4 bg-gray-100">
-      <div className="bg-white p-8  rounded-lg shadow-md w-full max-w-md">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <div className="flex justify-center mb-6">
           <img src="/icons/capitecLogo.svg" alt="Logo" className="h-12" />
         </div>
@@ -50,11 +62,17 @@ export default function Login() {
                 placeholder="0812345678"
                 pattern="[0-9]{10}"
                 required
-                className="w-full border border-gray-300 rounded px-3 py-2"
+                disabled={loading}
+                className="w-full border border-gray-300 rounded px-3 py-2 disabled:opacity-50"
               />
             </div>
-            <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-              Send OTP
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+            >
+              {loading ? 'Sending...' : 'Send OTP'}
             </button>
           </form>
         ) : (
@@ -72,14 +90,24 @@ export default function Login() {
                 placeholder="123456"
                 maxLength={6}
                 required
-                className={`w-full border rounded px-3 py-2 ${error ? 'border-red-500' : 'border-gray-300'}`}
+                disabled={loading}
+                className={`w-full border rounded px-3 py-2 disabled:opacity-50 ${error ? 'border-red-500' : 'border-gray-300'}`}
               />
               {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
             </div>
-            <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-              Verify OTP
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+            >
+              {loading ? 'Verifying...' : 'Verify OTP'}
             </button>
-            <button type="button" onClick={() => setStep('phone')} className="w-full text-gray-600">
+            <button 
+              type="button" 
+              onClick={() => setStep('phone')} 
+              disabled={loading}
+              className="w-full text-gray-600 disabled:opacity-50"
+            >
               Back
             </button>
           </form>
