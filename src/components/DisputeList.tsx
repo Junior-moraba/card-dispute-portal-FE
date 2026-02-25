@@ -1,30 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DisputeStatus, DisputeReason, type Dispute } from '../models/DisputeObjects';
+import { disputeService } from '../services/disputeService';
+import { useAuth } from '../context/AuthContext';
 import { Paperclip } from 'lucide-react';
+import Spinner from './Spinner';
 
-
-interface Props {
-  initialDisputes?: Dispute[];
-}
-const dummyDisputes: Dispute[] = [
-  { id: 'DSP-001', transactionId: '1', reasonCode: DisputeReason.Unauthorized, details: 'Unauthorized transaction on my account', evidenceAttached: true, status: DisputeStatus.Pending, submittedAt: '2024-01-20T10:00:00Z', estimatedResolutionDate: '2024-01-27' },
-  { id: 'DSP-002', transactionId: '2', reasonCode: DisputeReason.Duplicate, details: 'Duplicate charge for the same service', evidenceAttached: false, status: DisputeStatus.UnderReview, submittedAt: '2024-01-19T14:30:00Z', estimatedResolutionDate: '2024-01-26' },
-  { id: 'DSP-003', transactionId: '3', reasonCode: DisputeReason.IncorrectAmount, details: 'Charged incorrect amount', evidenceAttached: true, status: DisputeStatus.Resolved, submittedAt: '2024-01-18T09:15:00Z', estimatedResolutionDate: '2024-01-25' },
-  { id: 'DSP-004', transactionId: '4', reasonCode: DisputeReason.NotReceived, details: 'Product never received', evidenceAttached: false, status: DisputeStatus.Rejected, submittedAt: '2024-01-17T16:45:00Z', estimatedResolutionDate: '2024-01-24' },
-  { id: 'DSP-005', transactionId: '5', reasonCode: DisputeReason.Fraudulent, details: 'Fraudulent transaction detected', evidenceAttached: true, status: DisputeStatus.Pending, submittedAt: '2024-01-16T11:20:00Z', estimatedResolutionDate: '2024-01-23' },
-  { id: 'DSP-006', transactionId: '6', reasonCode: DisputeReason.Cancelled, details: 'Service was cancelled but still charged', evidenceAttached: false, status: DisputeStatus.UnderReview, submittedAt: '2024-01-15T13:00:00Z', estimatedResolutionDate: '2024-01-22' },
-  { id: 'DSP-007', transactionId: '7', reasonCode: DisputeReason.Other, details: 'Other dispute reason', evidenceAttached: true, status: DisputeStatus.Pending, submittedAt: '2024-01-14T08:30:00Z', estimatedResolutionDate: '2024-01-21' },
-  { id: 'DSP-008', transactionId: '8', reasonCode: DisputeReason.Unauthorized, details: 'Card used without permission', evidenceAttached: false, status: DisputeStatus.Resolved, submittedAt: '2024-01-13T15:10:00Z', estimatedResolutionDate: '2024-01-20' },
-  { id: 'DSP-009', transactionId: '9', reasonCode: DisputeReason.Duplicate, details: 'Double billing issue', evidenceAttached: true, status: DisputeStatus.UnderReview, submittedAt: '2024-01-12T12:40:00Z', estimatedResolutionDate: '2024-01-19' },
-  { id: 'DSP-010', transactionId: '10', reasonCode: DisputeReason.IncorrectAmount, details: 'Amount does not match receipt', evidenceAttached: false, status: DisputeStatus.Pending, submittedAt: '2024-01-11T10:25:00Z', estimatedResolutionDate: '2024-01-18' },
-];
-
-export default function DisputeList({ initialDisputes }: Props = {}) {
-  const [disputes] = useState<Dispute[]>(initialDisputes || dummyDisputes);
+export default function DisputeList() {
+  const [disputes, setDisputes] = useState<Dispute[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [sortField, setSortField] = useState<'submittedAt' | 'status'>('submittedAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
+  const { userId } = useAuth();
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    const fetchDisputes = async () => {
+      if (!userId) return;
+      
+      try {
+        setLoading(true);
+        const response = await disputeService.getDisputes();
+        setDisputes(response.disputes);
+      } catch (error) {
+        setError('Failed to load disputes');
+        console.error('Error fetching disputes:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDisputes();
+  }, [userId]);
 
   const sortedDisputes = [...disputes].sort((a, b) => {
     const multiplier = sortOrder === 'asc' ? 1 : -1;
@@ -46,6 +54,22 @@ export default function DisputeList({ initialDisputes }: Props = {}) {
       setSortOrder('desc');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="w-full p-8 text-center">
+        <Spinner size="md" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full p-8 text-center text-red-500">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   if (disputes.length === 0) {
     return (

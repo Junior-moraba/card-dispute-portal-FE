@@ -25,3 +25,24 @@ export enum DisputeReason {
   Cancelled = 'Cancelled Service',
   Other = 'OTHER'
 }
+
+
+export interface CreateDisputeRequest {
+  userId: string;
+  transactionId: string;
+  reasonCode: DisputeReason;
+  details: string;
+  evidence?: File;
+}
+
+export interface DisputeListParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+}
+
+export interface DisputeListResponse {
+  disputes: Dispute[];
+  totalCount: number;
+  totalPages: number;
+}

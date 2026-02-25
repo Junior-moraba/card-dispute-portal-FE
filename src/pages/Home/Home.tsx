@@ -4,7 +4,9 @@ import DisputeForm, { type DisputeFormData } from '../../components/DisputeForm'
 import { TransactionStatus, type Transaction, type TransactionListData } from '../../models/TransactionObjects';
 import { DisputeReason, DisputeStatus, type Dispute } from '../../models/DisputeObjects';
 import { transactionService } from '../../services/transactionService';
+import { disputeService } from '../../services/disputeService';
 import { useAuth } from '../../context/AuthContext';
+import Spinner from '../../components/Spinner';
 
 function Home() {
   const [transactions, setTransactions] = useState<TransactionListData>({} as TransactionListData);
@@ -27,6 +29,7 @@ function Home() {
         setLoading(true);
         hasFetched.current = true;
         const response = await transactionService.getTransactions({
+          userId: userId!,
           page: 1,
           limit: 10,
           sortBy: 'date',
@@ -51,6 +54,7 @@ function Home() {
     try {
       setLoading(true);
       const response = await transactionService.getTransactions({
+        userId: userId!,
         page,
         limit: 10,
         sortBy,
@@ -71,49 +75,63 @@ function Home() {
     setSortOrder(newSortOrder);
     setCurrentPage(1);
     
-    try {
-      setLoading(true);
-      const response = await transactionService.getTransactions({
-        page: 1,
-        limit: 10,
-        sortBy: field,
-        sortOrder: newSortOrder
-      });
-      setTransactions(response.data);
-    } catch (error) {
-      setError('Failed to load transactions');
-    } finally {
-      setLoading(false);
-    }
+    if(userId) {
+      try {
+        setLoading(true);
+        const response = await transactionService.getTransactions({
+          userId: userId ,
+          page: 1,
+          limit: 10,
+          sortBy: field,
+          sortOrder: newSortOrder
+        });
+        setTransactions(response.data);
+      } catch (error) {
+        setError('Failed to load transactions');
+      } finally {
+        setLoading(false);
+      }
+   }
   };
 
   const handleDispute = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
   };
 
-  const handleSubmitDispute = (formData: DisputeFormData) => {
-    if (selectedTransaction && formData.reasonCode !== '') {
-      const dispute: Dispute = {
-        transactionId: selectedTransaction.id,
-        reasonCode: formData.reasonCode as DisputeReason,
-        details: formData.details,
-        evidenceAttached: formData.evidenceAttached,
-        status: DisputeStatus.Pending,
-        estimatedResolutionDate: getEstimatedResolutionDate(),
-        submittedAt: new Date().toISOString(),
-      };
-      
-      setDisputes([...disputes, dispute]);
-      setTransactions({
-        ...transactions,
-        items: transactions.items.map(t =>  
-        t.id === selectedTransaction.id ? { ...t, status: TransactionStatus.Disputed } : t
-      )});
-      setSelectedTransaction(null);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
-    }
-  };
+  const handleSubmitDispute = async (formData: DisputeFormData) => {
+      if (selectedTransaction && formData.reasonCode !== '' && userId) {
+        try {
+          setLoading(true);
+          
+          const disputeRequest = {
+            userId,
+            transactionId: selectedTransaction.id,
+            reasonCode: formData.reasonCode as DisputeReason,
+            details: formData.details,
+            evidence: formData.evidenceFiles?.[0]
+          };
+
+          const createdDispute = await disputeService.createDispute(disputeRequest);
+          
+          setDisputes([...disputes, createdDispute]);
+          setTransactions({
+            ...transactions,
+            items: transactions.items.map(t =>  
+              t.id === selectedTransaction.id ? { ...t, status: TransactionStatus.Disputed } : t
+            )
+          });
+          setSelectedTransaction(null);
+          setShowSuccess(true);
+          setTimeout(() => setShowSuccess(false), 3000);
+        } catch (error) {
+          setError('Failed to submit dispute');
+          console.error('Error submitting dispute:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
 
   const getEstimatedResolutionDate = () => {
     const date = new Date();
@@ -122,12 +140,14 @@ function Home() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen w-full flex items-center justify-center">
-        <p>Loading transactions...</p>
-      </div>
-    );
-  }
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center">
+      <Spinner size="lg" />
+    </div>
+  );
+}
+
+
 
   if (error) {
     return (
