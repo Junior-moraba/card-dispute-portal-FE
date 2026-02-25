@@ -23,6 +23,7 @@ export enum TransactionStatus{
 
 
 export interface TransactionListParams {
+  userId: string;
   page?: number;
   limit?: number;
   sortBy?: string;

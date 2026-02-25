@@ -5,13 +5,11 @@ import { type Transaction, type TransactionListParams, type TransactionListRespo
 
 
 export const transactionService = {
-  getTransactions: (params: TransactionListParams = {}) => {
-    const userId = sessionStorage.getItem('userId');
-    if (!userId) throw new Error('User ID not found');
-    
+  getTransactions: (params: TransactionListParams = {userId: sessionStorage.getItem('userId') || ''}) => {
+
     return apiRequest<TransactionListResponse>('/transactions/list', {
       method: 'POST',
-      body: JSON.stringify({ ...params, userId }),
+      body: JSON.stringify({ ...params }),
     });
   },
 
