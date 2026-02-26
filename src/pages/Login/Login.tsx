@@ -33,7 +33,7 @@ export default function Login() {
     
     try {
       const response = await verifyOtp(phoneNumber, otp);
-      login(response.data.accessToken, response.data.user.phoneNumber, response.data.user.id);
+      login(response.data.accessToken, response.data.user.phoneNumber, response.data.user.id, response.data.refreshToken);
       goHome();
     } catch (error) {
       setError('Invalid OTP. Please try again.');

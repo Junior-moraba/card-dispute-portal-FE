@@ -19,7 +19,8 @@ describe('ProtectedRoute', () => {
       login: vi.fn(),
       logout: vi.fn(),
       sendOtp: vi.fn(),
-      verifyOtp: vi.fn()
+      verifyOtp: vi.fn(),
+      refreshToken: vi.fn()
     });
 
     render(
@@ -40,7 +41,8 @@ describe('ProtectedRoute', () => {
       login: vi.fn(),
       logout: vi.fn(),
       sendOtp: vi.fn(),
-      verifyOtp: vi.fn()
+      verifyOtp: vi.fn(),
+      refreshToken: vi.fn()
     });
 
     render(

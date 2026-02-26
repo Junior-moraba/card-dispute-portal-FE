@@ -21,7 +21,8 @@ describe('Header', () => {
       isLoading: false,
       login: vi.fn(),
       sendOtp: vi.fn(),
-      verifyOtp: vi.fn()
+      verifyOtp: vi.fn(),
+      refreshToken: vi.fn()
     });
     vi.mocked(useNavigation).mockReturnValue({
       goTo: vi.fn(),
@@ -51,7 +52,8 @@ describe('Header', () => {
         isLoading: false,
         login: vi.fn(),
         sendOtp: vi.fn(),
-        verifyOtp: vi.fn()
+        verifyOtp: vi.fn(),
+        refreshToken: vi.fn()
     });
     
     renderHeader();

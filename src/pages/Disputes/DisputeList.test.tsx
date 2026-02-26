@@ -43,7 +43,8 @@ describe('DisputeList', () => {
     login: vi.fn(),
     logout: vi.fn(),
     sendOtp: vi.fn(),
-    verifyOtp: vi.fn()
+    verifyOtp: vi.fn(),
+    refreshToken: vi.fn()
   });
   vi.mocked(disputeService.getDisputes).mockResolvedValue(mockDisputeData);
 });

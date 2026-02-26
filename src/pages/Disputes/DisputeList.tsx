@@ -29,8 +29,6 @@ export default function DisputeList() {
     const statusOrder = Object.keys(DisputeStatus);
     const currentIndex = statusOrder.indexOf(disputeStatus);
     const stepIndex = statusOrder.indexOf(stepStatus);
-
-    console.log(currentIndex, stepIndex);
     
     if (stepIndex !== -1 && currentIndex !== -1 && stepIndex < currentIndex) {
       return 'completed';

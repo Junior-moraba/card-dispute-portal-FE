@@ -45,7 +45,8 @@ describe('Home', () => {
       login: vi.fn(),
       logout: vi.fn(),
       sendOtp: vi.fn(),
-      verifyOtp: vi.fn()
+      verifyOtp: vi.fn(),
+      refreshToken: vi.fn()
     });
     vi.mocked(transactionService.getTransactions).mockResolvedValue(mockTransactionData);
     vi.mocked(disputeService.createDispute).mockResolvedValue({} as any);

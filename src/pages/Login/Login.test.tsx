@@ -23,7 +23,8 @@ describe('Login', () => {
       isAuthenticated: false,
       phoneNumber: null,
       isLoading: false,
-      logout: vi.fn()
+      logout: vi.fn(),
+      refreshToken: vi.fn()
     });
     vi.mocked(useNavigation).mockReturnValue({
         goHome: mockGoHome,

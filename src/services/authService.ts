@@ -15,8 +15,15 @@ export const authService = {
       body: JSON.stringify({ phoneNumber: request.phoneNumber, otp: request.otp }),
     }),
 
-  logout: () =>
+  refreshToken: (refreshToken: string) =>
+    apiRequest<AuthResponse>('/auth/refresh-token', {
+      method: 'POST',
+      body: JSON.stringify({ refreshToken }),
+    }),
+
+  logout: (refreshToken?: string) =>
     apiRequest<void>('/auth/logout', {
       method: 'POST',
+      body: JSON.stringify({ refreshToken }),
     }),
 };
