@@ -11,6 +11,10 @@ export default function DisputeList() {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const { userId } = useAuth();
+  const [sortBy, setSortBy] = useState('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+
 
   const timelineSteps = Object.entries(DisputeStatus).map(([key, value]) => ({
     status: key,
@@ -45,7 +49,8 @@ export default function DisputeList() {
         const response = await disputeService.getDisputes({
           page: currentPage,
           limit: 5,
-          sortBy: 'date'
+          sortBy: sortBy,
+          sortOrder: sortOrder
         });
         setDisputeData(response);
       } catch (error) {
@@ -57,7 +62,7 @@ export default function DisputeList() {
     };
 
     fetchDisputes();
-  }, [userId, currentPage]);
+   }, [userId, currentPage, sortBy, sortOrder]);
 
   const handlePageChange = async (page: number) => {
     try {
@@ -65,7 +70,8 @@ export default function DisputeList() {
       const response = await disputeService.getDisputes({
         page,
         limit: 5,
-        sortBy: 'date'
+        sortBy: sortBy,
+        sortOrder: sortOrder
       });
       setDisputeData(response);
       setCurrentPage(page);
@@ -89,7 +95,7 @@ export default function DisputeList() {
 
   if (loading) {
     return (
-      <div className="w-full p-8 text-center">
+      <div className="min-h-screen w-full flex items-center justify-center">
         <Spinner size="md" />
       </div>
     );
@@ -97,7 +103,7 @@ export default function DisputeList() {
 
   if (error) {
     return (
-      <div className="w-full p-8 text-center text-red-500">
+      <div className="min-h-screen w-full flex items-center justify-center">
         <p>{error}</p>
       </div>
     );
@@ -105,7 +111,7 @@ export default function DisputeList() {
 
   if (!disputeData.data.items?.length) {
     return (
-      <div className="w-full p-8 text-center text-gray-500">
+      <div className="min-h-screen w-full flex items-center justify-center">
         <p>No disputes found</p>
       </div>
     );
@@ -115,7 +121,31 @@ export default function DisputeList() {
     <div className="w-full p-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">My Disputes ({disputeData.data.totalCount})</h2>
+
+        <div className="flex gap-2">
+          <button 
+            onClick={() => {
+              setSortBy('date');
+              setSortOrder(sortBy === 'date' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'desc');
+            }}
+            className={`px-3 py-1 rounded text-sm ${sortBy === 'date' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            Date {sortBy === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
+          </button>
+          <button 
+            onClick={() => {
+              setSortBy('status');
+              setSortOrder(sortBy === 'status' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'desc');
+            }}
+            className={`px-3 py-1 rounded text-sm ${sortBy === 'status' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            Status {sortBy === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}
+          </button>
+        </div>
       </div>
+
+     
+
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 flex items-start gap-2">
         <Info className="w-5 h-5 text-blue-600 mt-0.5" />
