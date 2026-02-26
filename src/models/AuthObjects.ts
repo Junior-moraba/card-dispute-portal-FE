@@ -12,14 +12,14 @@ export interface AuthResponse {
   success: boolean;
 }
 
-export interface ResponseData{
+export interface ResponseData {
   accessToken: string;
-  refreshToken:string;
+  refreshToken: string;
   user: User;
 }
 
-export interface User{
-  id:string;
-  phoneNumber:string;
-  name:string;
+export interface User {
+  id: string;
+  phoneNumber: string;
+  name: string;
 }

@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { type Transaction } from '../models/TransactionObjects';
-import { DisputeReason } from '../models/DisputeObjects';
+import { useState } from "react";
+import { type Transaction } from "../models/TransactionObjects";
+import { DisputeReason } from "../models/DisputeObjects";
 
 export interface DisputeFormData {
-  reasonCode: DisputeReason | '';
+  reasonCode: DisputeReason | "";
   details: string;
   evidenceAttached: boolean;
   evidenceFiles?: File[];
@@ -16,19 +16,24 @@ interface Props {
   onCancel: () => void;
 }
 
-export default function DisputeForm({ transaction, onSubmit, onCancel }: Props) {
+export default function DisputeForm({
+  transaction,
+  onSubmit,
+  onCancel,
+}: Props) {
   const [formData, setFormData] = useState<DisputeFormData>({
-    reasonCode: '',
-    details: '',
+    reasonCode: "",
+    details: "",
     evidenceAttached: false,
     evidenceFiles: [],
   });
 
-  const isValid = formData.reasonCode !== '' && formData.details.trim().length >= 10;
+  const isValid =
+    formData.reasonCode !== "" && formData.details.trim().length >= 10;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []).slice(0, 2);
-    setFormData({...formData, evidenceFiles: files});
+    setFormData({ ...formData, evidenceFiles: files });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,54 +47,78 @@ export default function DisputeForm({ transaction, onSubmit, onCancel }: Props) 
     <div className="flex w-full max-w-md flex-col gap-6 rounded-lg bg-gray-100 p-6 shadow-lg">
       <p className="text-4xl font-bold">Dispute Transaction</p>
       <div className="transaction-details">
-        <div className='flex flex-row gap-2'> 
-          <label htmlFor="merchantName" className='font-bold'>Merchant:</label> 
+        <div className="flex flex-row gap-2">
+          <label htmlFor="merchantName" className="font-bold">
+            Merchant:
+          </label>
           <p id="merchantName">{transaction.merchant.name}</p>
         </div>
-        <div className='flex flex-row gap-2'> 
-          <label htmlFor="merchantCategory" className='font-bold'>Category:</label> 
+        <div className="flex flex-row gap-2">
+          <label htmlFor="merchantCategory" className="font-bold">
+            Category:
+          </label>
           <p id="merchantCategory">{transaction.merchant.category}</p>
         </div>
-        <div className='flex flex-row gap-2'> 
-          <label htmlFor="merchantReference" className='font-bold'>Reference:</label> 
+        <div className="flex flex-row gap-2">
+          <label htmlFor="merchantReference" className="font-bold">
+            Reference:
+          </label>
           <p id="merchantReference">{transaction.reference}</p>
         </div>
-        <div className='flex flex-row gap-2'> 
-          <label htmlFor="transactionAmount" className='font-bold'>Amount:</label> 
+        <div className="flex flex-row gap-2">
+          <label htmlFor="transactionAmount" className="font-bold">
+            Amount:
+          </label>
           <p id="transactionAmount">R {transaction.amount.toFixed(2)}</p>
         </div>
-        <div className='flex flex-row gap-2'> 
-          <label htmlFor="transactionDate" className='font-bold'>Date:</label> 
-          <p id="transactionDate">{new Date(transaction.date).toLocaleDateString()}</p>
+        <div className="flex flex-row gap-2">
+          <label htmlFor="transactionDate" className="font-bold">
+            Date:
+          </label>
+          <p id="transactionDate">
+            {new Date(transaction.date).toLocaleDateString()}
+          </p>
         </div>
       </div>
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex gap-2">
-          <label className='font-bold' htmlFor="reason">Reason:</label>
-          <select 
-              className='border w-full border-blue-600 rounded-md p-2' 
-              id="reason" 
-              value={formData.reasonCode} 
-              onChange={(e) => setFormData({...formData, reasonCode: e.target.value as DisputeReason})} 
-              required
-            >
-              <option value="">Select a reason</option>
-              {Object.entries(reasonOptions).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </select>
-
+          <label className="font-bold" htmlFor="reason">
+            Reason:
+          </label>
+          <select
+            className="border w-full border-blue-600 rounded-md p-2"
+            id="reason"
+            value={formData.reasonCode}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                reasonCode: e.target.value as DisputeReason,
+              })
+            }
+            required
+          >
+            <option value="">Select a reason</option>
+            {Object.entries(reasonOptions).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex flex-col gap-2">
-          <label className='font-bold' htmlFor="description">Description (min 10 characters)</label>
+          <label className="font-bold" htmlFor="description">
+            Description (min 10 characters)
+          </label>
           <textarea
             id="description"
             value={formData.details}
-            onChange={(e) => setFormData({...formData, details: e.target.value})}
+            onChange={(e) =>
+              setFormData({ ...formData, details: e.target.value })
+            }
             placeholder="Provide details about the dispute"
             rows={4}
             required
-            className='border border-blue-600 w-full rounded-md p-2'
+            className="border border-blue-600 w-full rounded-md p-2"
           />
         </div>
         <div className="flex gap-2">
@@ -97,9 +126,17 @@ export default function DisputeForm({ transaction, onSubmit, onCancel }: Props) 
             type="checkbox"
             id="evidence"
             checked={formData.evidenceAttached}
-            onChange={(e) => setFormData({...formData, evidenceAttached: e.target.checked, evidenceFiles: []})}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                evidenceAttached: e.target.checked,
+                evidenceFiles: [],
+              })
+            }
           />
-          <label htmlFor="evidence">I have evidence to support this dispute</label>
+          <label htmlFor="evidence">
+            I have evidence to support this dispute
+          </label>
         </div>
         {formData.evidenceAttached && (
           <div className="flex flex-col gap-2">
@@ -122,14 +159,20 @@ export default function DisputeForm({ transaction, onSubmit, onCancel }: Props) 
           </div>
         )}
         <div className="flex flex-row gap-4 justify-end">
-          <button 
-            className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed' 
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
             type="submit"
             disabled={!isValid}
           >
             Submit Dispute
           </button>
-          <button className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600' type="button" onClick={onCancel}>Close</button>
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            type="button"
+            onClick={onCancel}
+          >
+            Close
+          </button>
         </div>
       </form>
     </div>

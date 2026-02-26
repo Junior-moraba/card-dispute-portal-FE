@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 .transaction-list table {
   @apply w-full border-collapse border border-gray-300;
 }

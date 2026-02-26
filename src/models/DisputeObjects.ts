@@ -4,7 +4,7 @@ export interface Dispute {
   id?: string;
   transactionId: string;
   reasonCode: DisputeReason;
-  merchant:Merchant;
+  merchant: Merchant;
   reference: string;
   details: string;
   evidenceAttached?: boolean;
@@ -14,22 +14,21 @@ export interface Dispute {
 }
 
 export enum DisputeStatus {
-  Pending = 'Dispute Pending',
-  UnderReview = 'Dispute Under Review by agents',
-  Resolved = 'Dispute Resolved',
-  Rejected = 'Dispute Rejected'
+  Pending = "Dispute Pending",
+  UnderReview = "Dispute Under Review by agents",
+  Resolved = "Dispute Resolved",
+  Rejected = "Dispute Rejected",
 }
 
 export enum DisputeReason {
-  Unauthorized = 'Unauthorized Transaction',
-  Duplicate = 'Duplicate Charge',
-  IncorrectAmount = 'Incorrect Amount',
-  NotReceived = 'Product/Service Not Received',
-  Fraudulent = 'Fraudulent Transaction',
-  Cancelled = 'Cancelled Service',
-  Other = 'OTHER'
+  Unauthorized = "Unauthorized Transaction",
+  Duplicate = "Duplicate Charge",
+  IncorrectAmount = "Incorrect Amount",
+  NotReceived = "Product/Service Not Received",
+  Fraudulent = "Fraudulent Transaction",
+  Cancelled = "Cancelled Service",
+  Other = "OTHER",
 }
-
 
 export interface CreateDisputeRequest {
   userId: string;
@@ -43,7 +42,7 @@ export interface DisputeListParams {
   page?: number;
   limit?: number;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 export interface DisputeListResponse {
@@ -51,7 +50,7 @@ export interface DisputeListResponse {
   data: DisputeData;
 }
 
-export interface DisputeData{
+export interface DisputeData {
   page: number;
   returnedCount: number;
   totalCount: number;

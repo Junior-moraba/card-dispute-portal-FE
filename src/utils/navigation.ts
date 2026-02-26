@@ -1,4 +1,4 @@
-import { useNavigate as useRouterNavigate } from 'react-router-dom';
+import { useNavigate as useRouterNavigate } from "react-router-dom";
 
 export const useNavigation = () => {
   const navigate = useRouterNavigate();
@@ -12,11 +12,11 @@ export const useNavigation = () => {
   };
 
   const goHome = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const goToDisputes = () => {
-    navigate('/disputes');
+    navigate("/disputes");
   };
 
   return { goTo, goBack, goHome, goToDisputes };

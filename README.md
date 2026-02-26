@@ -30,30 +30,69 @@ A web application that allows Capitec Bank clients to view their transactions an
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/Junior-moraba/card-dispute-portal-FE.git
 cd card-dispute-portal
 ```
+
 2. Install dependencies
-``` bash
+
+```bash
 npm install
 ```
+
 3. Start the development server:
+
 ```bash
 npm run dev
 ```
+
 4. Open your browser and navigate to http://localhost:5173
 
+### Testting
+
+1. Run All Tests
+   npm test
+
+2. Run Tests in Watch Mode
+   npm run test:watch
+
+3. Run Tests with Coverage
+   npm run test:coverage
+
+4. Type Checking
+   npm run type-check
+
+### Code Quality
+
+1. Lint code
+   npm run lint
+
+2. Format code
+   npm run format
 
 ## Docker
+
 1. Build and start
-docker-compose up -d
+   docker-compose up -d
 
 2. View logs
-docker-compose logs -f
+   docker-compose logs -f
 
 3. Stop
-docker-compose down
+   docker-compose down
 
 4. Rebuild
-docker-compose up -d --build
+   docker-compose up -d --build
+
+### Project Structure
+
+src/
+├── components/ # Reusable UI components
+├── context/ # React context providers
+├── models/ # TypeScript interfaces
+├── pages/ # Page components
+├── services/ # API service functions
+├── utils/ # Utility functions
+└── layouts/ # Layout components

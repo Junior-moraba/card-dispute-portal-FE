@@ -1,13 +1,25 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import { authService } from '../services/authService';
-import type { AuthResponse } from '../models/AuthObjects';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
+import { authService } from "../services/authService";
+import type { AuthResponse } from "../models/AuthObjects";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   phoneNumber: string | null;
   userId: string | null;
   isLoading: boolean;
-  login: (token: string, phone: string, userId: string, refreshToken?: string) => void;
+  login: (
+    token: string,
+    phone: string,
+    userId: string,
+    refreshToken?: string,
+  ) => void;
   logout: () => Promise<void>;
   sendOtp: (phone: string) => Promise<void>;
   verifyOtp: (phone: string, otp: string) => Promise<AuthResponse>;
@@ -19,24 +31,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const parseJWT = (token: string) => {
   try {
     // Check if token has 3 parts separated by dots (valid JWT format)
-    const parts = token.split('.');
+    const parts = token.split(".");
     if (parts.length !== 3) {
-      console.warn('Token is not a valid JWT format');
+      console.warn("Token is not a valid JWT format");
       return null;
     }
-    
+
     // Decode the payload (second part)
     const payload = parts[1];
     // Add padding if needed for base64 decoding
-    const paddedPayload = payload + '='.repeat((4 - payload.length % 4) % 4);
-    
+    const paddedPayload = payload + "=".repeat((4 - (payload.length % 4)) % 4);
+
     return JSON.parse(atob(paddedPayload));
   } catch (error) {
-    console.error('Failed to parse JWT token:', error);
+    console.error("Failed to parse JWT token:", error);
     return null;
   }
 };
-
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -46,42 +57,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = useCallback(async () => {
     try {
-      const refreshToken = sessionStorage.getItem('refreshToken');
+      const refreshToken = sessionStorage.getItem("refreshToken");
       await authService.logout(refreshToken || undefined);
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       setIsAuthenticated(false);
       setPhoneNumber(null);
       setUserId(null);
-      sessionStorage.removeItem('authToken');
-      sessionStorage.removeItem('phoneNumber');
-      sessionStorage.removeItem('userId');
-      sessionStorage.removeItem('refreshToken');
+      sessionStorage.removeItem("authToken");
+      sessionStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("userId");
+      sessionStorage.removeItem("refreshToken");
     }
   }, []);
 
   const refreshToken = useCallback(async () => {
     try {
-      const refreshTokenValue = sessionStorage.getItem('refreshToken');
-      if (!refreshTokenValue) throw new Error('No refresh token');
-      
+      const refreshTokenValue = sessionStorage.getItem("refreshToken");
+      if (!refreshTokenValue) throw new Error("No refresh token");
+
       const response = await authService.refreshToken(refreshTokenValue);
-      sessionStorage.setItem('authToken', response.data.accessToken);
+      sessionStorage.setItem("authToken", response.data.accessToken);
       if (response.data.refreshToken) {
-        sessionStorage.setItem('refreshToken', response.data.refreshToken);
+        sessionStorage.setItem("refreshToken", response.data.refreshToken);
       }
     } catch (error) {
-      console.error('Token refresh failed:', error);
+      console.error("Token refresh failed:", error);
       logout();
     }
   }, [logout]);
 
-
   const checkTokenExpiry = useCallback(() => {
-    const token = sessionStorage.getItem('authToken');
+    const token = sessionStorage.getItem("authToken");
     if (!token) return;
-
 
     const payload = parseJWT(token);
     if (!payload?.exp) return;
@@ -91,8 +100,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (timeUntilExpiry <= 0) {
       logout();
-    } else if (timeUntilExpiry <= 60) { 
-      const keepActive = confirm('Your session will expire soon. Do you want to keep it active?');
+    } else if (timeUntilExpiry <= 60) {
+      const keepActive = confirm(
+        "Your session will expire soon. Do you want to keep it active?",
+      );
       if (keepActive) {
         refreshToken();
       } else {
@@ -102,10 +113,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [logout, refreshToken]);
 
   useEffect(() => {
-    const token = sessionStorage.getItem('authToken');
-    const phone = sessionStorage.getItem('phoneNumber');
-    const id = sessionStorage.getItem('userId');
-    
+    const token = sessionStorage.getItem("authToken");
+    const phone = sessionStorage.getItem("phoneNumber");
+    const id = sessionStorage.getItem("userId");
+
     if (token && phone && id) {
       setIsAuthenticated(true);
       setPhoneNumber(phone);
@@ -122,15 +133,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => clearInterval(interval);
   }, [isAuthenticated, checkTokenExpiry]);
 
-  const login = (token: string, phone: string, userId: string, refreshToken?: string) => {
+  const login = (
+    token: string,
+    phone: string,
+    userId: string,
+    refreshToken?: string,
+  ) => {
     setIsAuthenticated(true);
     setPhoneNumber(phone);
     setUserId(userId);
-    sessionStorage.setItem('authToken', token);
-    sessionStorage.setItem('phoneNumber', phone);
-    sessionStorage.setItem('userId', userId);
+    sessionStorage.setItem("authToken", token);
+    sessionStorage.setItem("phoneNumber", phone);
+    sessionStorage.setItem("userId", userId);
     if (refreshToken) {
-      sessionStorage.setItem('refreshToken', refreshToken);
+      sessionStorage.setItem("refreshToken", refreshToken);
     }
   };
 
@@ -143,17 +159,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      isAuthenticated, 
-      phoneNumber, 
-      userId,
-      isLoading,
-      login, 
-      logout, 
-      sendOtp, 
-      verifyOtp,
-      refreshToken
-    }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        phoneNumber,
+        userId,
+        isLoading,
+        login,
+        logout,
+        sendOtp,
+        verifyOtp,
+        refreshToken,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -161,6 +179,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };

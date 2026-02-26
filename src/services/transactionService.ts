@@ -1,14 +1,18 @@
-import { apiRequest } from './api';
-import { type Transaction, type TransactionListParams, type TransactionListResponse } from '../models/TransactionObjects';
-
-
-
+import { apiRequest } from "./api";
+import {
+  type Transaction,
+  type TransactionListParams,
+  type TransactionListResponse,
+} from "../models/TransactionObjects";
 
 export const transactionService = {
-  getTransactions: (params: TransactionListParams = {userId: sessionStorage.getItem('userId') || ''}) => {
-
-    return apiRequest<TransactionListResponse>('/transactions/list', {
-      method: 'POST',
+  getTransactions: (
+    params: TransactionListParams = {
+      userId: sessionStorage.getItem("userId") || "",
+    },
+  ) => {
+    return apiRequest<TransactionListResponse>("/transactions/list", {
+      method: "POST",
       body: JSON.stringify({ ...params }),
     });
   },

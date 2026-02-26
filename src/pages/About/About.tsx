@@ -1,19 +1,24 @@
-import { Phone, Mail, Clock, MapPin } from 'lucide-react';
+import { Phone, Mail, Clock, MapPin } from "lucide-react";
 
 export default function About() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">About Card Dispute Portal</h1>
-          
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+            About Card Dispute Portal
+          </h1>
+
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Our Purpose</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Our Purpose
+            </h2>
             <p className="text-gray-600 leading-relaxed">
-              The Card Dispute Portal is designed to provide Capitec Bank clients with a secure, 
-              convenient way to view their transactions and submit disputes for unauthorized or 
-              incorrect charges. Our platform ensures your financial concerns are addressed 
-              promptly and efficiently.
+              The Card Dispute Portal is designed to provide Capitec Bank
+              clients with a secure, convenient way to view their transactions
+              and submit disputes for unauthorized or incorrect charges. Our
+              platform ensures your financial concerns are addressed promptly
+              and efficiently.
             </p>
           </div>
 
@@ -24,9 +29,15 @@ export default function About() {
                 Working Hours
               </h2>
               <div className="space-y-2 text-gray-600">
-                <p><strong>Monday - Friday:</strong> 8:00 AM - 5:00 PM</p>
-                <p><strong>Saturday:</strong> 8:00 AM - 1:00 PM</p>
-                <p><strong>Sunday:</strong> Closed</p>
+                <p>
+                  <strong>Monday - Friday:</strong> 8:00 AM - 5:00 PM
+                </p>
+                <p>
+                  <strong>Saturday:</strong> 8:00 AM - 1:00 PM
+                </p>
+                <p>
+                  <strong>Sunday:</strong> Closed
+                </p>
                 <p className="text-sm text-gray-500 mt-2">
                   *Online portal available 24/7
                 </p>
@@ -34,7 +45,9 @@ export default function About() {
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Contact Details</h2>
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                Contact Details
+              </h2>
               <div className="space-y-3">
                 <div className="flex items-center text-gray-600">
                   <Phone className="w-5 h-5 mr-3 text-blue-600" />
@@ -59,9 +72,9 @@ export default function About() {
           <div className="mt-8 p-4 bg-blue-50 rounded-lg">
             <h3 className="font-semibold text-blue-900 mb-2">Need Help?</h3>
             <p className="text-blue-800 text-sm">
-              If you need assistance with your dispute or have questions about our services, 
-              please don't hesitate to contact us during our working hours or submit your 
-              query through the portal.
+              If you need assistance with your dispute or have questions about
+              our services, please don't hesitate to contact us during our
+              working hours or submit your query through the portal.
             </p>
           </div>
         </div>
