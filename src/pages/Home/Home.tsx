@@ -10,7 +10,6 @@ import {
 } from "../../models/TransactionObjects";
 import {
   DisputeReason,
-  DisputeStatus,
   type Dispute,
 } from "../../models/DisputeObjects";
 import { transactionService } from "../../services/transactionService";
