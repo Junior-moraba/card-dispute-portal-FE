@@ -85,9 +85,10 @@ describe('Login', () => {
     
     expect(mockVerifyOtp).toHaveBeenCalledWith('0812345678', '123456');
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith('token', '0812345678', 'user1');
+      expect(mockLogin).toHaveBeenCalledWith('token', '0812345678', 'user1', undefined);
       expect(mockGoHome).toHaveBeenCalled();
     });
+
   });
 
   it('shows error on failed OTP send', async () => {
