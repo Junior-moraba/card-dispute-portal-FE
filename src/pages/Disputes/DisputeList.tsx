@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { DisputeStatus, DisputeReason, type Dispute, type DisputeListResponse } from '../../models/DisputeObjects';
 import { disputeService } from '../../services/disputeService';
 import { useAuth } from '../../context/AuthContext';
-import { Paperclip, Info } from 'lucide-react';
+import { Paperclip, Info, CheckCircle, Clock, XCircle, EyeIcon } from 'lucide-react';
 import Spinner from '../../components/Spinner';
 
 export default function DisputeList() {
@@ -11,6 +11,30 @@ export default function DisputeList() {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const { userId } = useAuth();
+
+  const timelineSteps = Object.entries(DisputeStatus).map(([key, value]) => ({
+    status: key,
+    label:value,
+    icon: key === 'Pending' ? Clock : key === 'UnderReview' ? EyeIcon : key === 'Resolved' ? CheckCircle : XCircle
+  }));
+
+
+ const getStepStatus = (disputeStatus: string, stepStatus: string) => {
+    if (disputeStatus === stepStatus) return 'current';
+    
+    const statusOrder = Object.keys(DisputeStatus);
+    const currentIndex = statusOrder.indexOf(disputeStatus);
+    const stepIndex = statusOrder.indexOf(stepStatus);
+
+    console.log(currentIndex, stepIndex);
+    
+    if (stepIndex !== -1 && currentIndex !== -1 && stepIndex < currentIndex) {
+      return 'completed';
+    }
+    
+    return 'inactive';
+};
+
 
   useEffect(() => {
     const fetchDisputes = async () => {
@@ -103,19 +127,49 @@ export default function DisputeList() {
       <div className="space-y-4">
         {disputeData.data.items.map((dispute) => (
           <div key={dispute.id} className="border border-gray-300 rounded-lg p-4 bg-white shadow">
-            <div className="flex justify-between gap-2 items-start mb-2">
+            <div className="flex justify-between gap-2 items-start mb-4">
               <div>
                 <p className="text-gray-600"><strong>Dispute ID:</strong> {dispute.id}</p>
               </div>
-              <span className={`px-3 py-1 rounded text-sm font-semibold ${
-                dispute.status === DisputeStatus.Pending ? 'bg-yellow-100 text-yellow-800' :
-                dispute.status === DisputeStatus.UnderReview ? 'bg-blue-100 text-blue-800' :
-                dispute.status === DisputeStatus.Resolved ? 'bg-green-100 text-green-800' :
-                'bg-red-100 text-red-800'
-              }`}>
-                {dispute.status}
-              </span>
             </div>
+
+            {/* Timeline */}
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Status Timeline</h4>
+              <div className="flex items-center justify-between">
+                {timelineSteps.map((step, index) => {
+                  const status = getStepStatus(dispute.status, step.status);
+                  const IconComponent = step.icon;
+                  
+                  return (
+                    <div key={step.status} className="flex items-center">
+                      <div className="flex flex-col items-center">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          status === 'completed' ? 'bg-green-500 text-white' :
+                          status === 'current' ? 'bg-blue-500 text-white' :
+                          'bg-gray-300 text-gray-500'
+                        }`}>
+                          <IconComponent className="w-4 h-4" />
+                        </div>
+                        <span className={`text-xs text-center mt-1 ${
+                          status === 'completed' ? 'text-green-600' :
+                          status === 'current' ? 'text-blue-600' :
+                          'text-gray-400'
+                        }`}>
+                          {step.label}
+                        </span>
+                      </div>
+                      {index < timelineSteps.length - 1 && (
+                        <div className={`flex-1 h-0.5 mx-2 ${
+                          status === 'completed' ? 'bg-green-500' : 'bg-gray-300'
+                        }`} />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className='flex flex-col gap-2'>
                 <p className="text-sm text-gray-600"><strong>Reference:</strong> {dispute.reference}</p>
                 <p className="text-sm text-gray-600"><strong>Merchant:</strong> {dispute.merchant.name}</p>
@@ -137,7 +191,7 @@ export default function DisputeList() {
               <button
                 onClick={() => handleEscalate(dispute.id!)}
                 disabled={!canEscalate(dispute)}
-                className="bg-red-500 text-white hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed px-4 py-2 rounded text-sm font-semibold"
+                className="bg-orange-500 text-white hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed px-4 py-2 rounded text-sm font-semibold"
               >
                 Escalate
               </button>
