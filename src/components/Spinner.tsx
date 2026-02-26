@@ -10,8 +10,9 @@ export default function Spinner({ size = 'md' }: SpinnerProps) {
   };
 
   return (
-    <div className={`${sizeClasses[size]} animate-spin`}>
-      <div className="w-full h-full rounded-full border-4 border-transparent border-t-red-500 border-r-white border-b-blue-500"></div>
-    </div>
-  );
+  <div className={`${sizeClasses[size]} animate-spin`} data-testid="spinner">
+    <div className="w-full h-full rounded-full border-4 border-transparent border-t-red-500 border-r-white border-b-blue-500"></div>
+  </div>
+);
+
 }
