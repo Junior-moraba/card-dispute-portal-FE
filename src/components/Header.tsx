@@ -52,6 +52,7 @@ const Header: React.FC<HeaderProps> = ({
               <button
                 key={index}
                 onClick={() => goTo(item.href)}
+                data-testid={`nav-${item.label.toLowerCase()}`}
                 className={`transition-colors duration-200 ${
                   isActive(item.href) 
                     ? 'text-blue-600 font-semibold' 
@@ -63,6 +64,7 @@ const Header: React.FC<HeaderProps> = ({
             ))}
             <button
               onClick={handleLogout}
+              data-testid="desktop-logout"
               className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
             >
               Logout
@@ -101,6 +103,7 @@ const Header: React.FC<HeaderProps> = ({
                 goTo(item.href);
                 setIsMenuOpen(false);
               }}
+              data-testid={`mobile-nav-${item.label.toLowerCase()}`}
               className={`block w-full text-left py-3 transition-colors duration-200 ${
                 isActive(item.href)
                   ? 'text-blue-600 font-semibold'
@@ -115,6 +118,7 @@ const Header: React.FC<HeaderProps> = ({
               handleLogout();
               setIsMenuOpen(false);
             }}
+            data-testid="mobile-logout"
             className="w-full text-left py-3 text-red-600 hover:text-red-700"
           >
             Logout
