@@ -7,6 +7,7 @@ import Login from './pages/Login/Login';
 import Home from './pages/Home/Home';
 import MainLayout from './layouts/MainLayout';
 import DisputeList from './pages/Disputes/DisputeList';
+import About from './pages/About/About';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/disputes" element={<ProtectedRoute><DisputeList /></ProtectedRoute>} />
+          <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
         </Route>
       </Routes>
     </AuthProvider>
