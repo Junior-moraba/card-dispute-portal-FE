@@ -128,6 +128,7 @@ export default function DisputeList() {
               setSortBy('date');
               setSortOrder(sortBy === 'date' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'desc');
             }}
+            data-testid="sort-date"
             className={`px-3 py-1 rounded text-sm ${sortBy === 'date' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
           >
             Date {sortBy === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -137,6 +138,7 @@ export default function DisputeList() {
               setSortBy('status');
               setSortOrder(sortBy === 'status' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'desc');
             }}
+            data-testid="sort-status"
             className={`px-3 py-1 rounded text-sm ${sortBy === 'status' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
           >
             Status {sortBy === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}
