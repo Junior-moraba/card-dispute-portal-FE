@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import DisputeList from '../DisputeList';
+import DisputeList from '../../pages/Disputes/DisputeList';
 import { DisputeStatus, DisputeReason, type Dispute } from '../../models/DisputeObjects';
 
 const testDisputes: Dispute[] = [

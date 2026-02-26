@@ -1,7 +1,11 @@
+import type { Merchant } from "./TransactionObjects";
+
 export interface Dispute {
   id?: string;
   transactionId: string;
   reasonCode: DisputeReason;
+  merchant:Merchant;
+  reference: string;
   details: string;
   evidenceAttached?: boolean;
   status: DisputeStatus;
@@ -42,7 +46,14 @@ export interface DisputeListParams {
 }
 
 export interface DisputeListResponse {
-  disputes: Dispute[];
+  success: boolean;
+  data: DisputeData;
+}
+
+export interface DisputeData{
+  page: number;
+  returnedCount: number;
   totalCount: number;
   totalPages: number;
+  items: Dispute[];
 }

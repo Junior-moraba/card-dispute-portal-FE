@@ -6,7 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login/Login';
 import Home from './pages/Home/Home';
 import MainLayout from './layouts/MainLayout';
-import DisputeList from './components/DisputeList';
+import DisputeList from './pages/Disputes/DisputeList';
 
 function App() {
   return (

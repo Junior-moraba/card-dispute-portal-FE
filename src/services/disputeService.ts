@@ -1,5 +1,5 @@
 import { apiRequest } from './api';
-import { type CreateDisputeRequest, type Dispute, type DisputeListParams, type DisputeListResponse, DisputeReason } from '../models/DisputeObjects';
+import { type CreateDisputeRequest, type Dispute, type DisputeListParams, type DisputeListResponse } from '../models/DisputeObjects';
 
 
 export const disputeService = {

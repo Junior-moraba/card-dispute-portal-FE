@@ -133,11 +133,6 @@ function Home() {
     };
 
 
-  const getEstimatedResolutionDate = () => {
-    const date = new Date();
-    date.setDate(date.getDate() + 3);
-    return date.toISOString().split('T')[0];
-  };
 
   if (loading) {
   return (
