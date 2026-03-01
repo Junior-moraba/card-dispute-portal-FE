@@ -157,12 +157,26 @@ function Home() {
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen w-full flex items-center justify-center">
-        <p className="text-red-500">{error}</p>
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center">
+      <p className="text-red-500">{error}</p>
+    </div>
+  );
+}
+
+if (!transactions.items || transactions.items.length === 0) {
+  return (
+    <div className="min-h-screen w-full flex flex-col items-center gap-4">
+      <p className="text-5xl font-bold">Card Dispute Portal</p>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
+        <p className="text-xl text-gray-700 mb-2">No Transactions Found</p>
+        <p className="text-gray-600">You don't have any transactions yet.</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
+
 
   return (
     <div className="min-h-screen w-full gap-4 flex flex-col items-center p-4">
