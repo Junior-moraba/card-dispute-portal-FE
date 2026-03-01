@@ -119,7 +119,7 @@ docker rm -f card-dispute-portal
 
 ### Build and Start
 ```bash
-docker-compose up -d --build
+fi
 ```
 
 ### View Logs

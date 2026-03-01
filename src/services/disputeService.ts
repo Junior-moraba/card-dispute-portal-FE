@@ -5,7 +5,7 @@ import {
   type DisputeListParams,
   type DisputeListResponse,
 } from "../models/DisputeObjects";
-
+import { API_BASE_URL } from "./api";
 export const disputeService = {
   getDisputes: (params: DisputeListParams = {}) => {
     const userId = sessionStorage.getItem("userId");
@@ -19,7 +19,7 @@ export const disputeService = {
 
   getDispute: (id: string) => apiRequest<Dispute>(`/disputes/${id}`),
 
-  createDispute: async (disputeData: CreateDisputeRequest) => {
+    createDispute: async (disputeData: CreateDisputeRequest) => {
     const formData = new FormData();
     formData.append("userId", disputeData.userId);
     formData.append("transactionId", disputeData.transactionId);
@@ -30,12 +30,23 @@ export const disputeService = {
       formData.append("evidence", disputeData.evidence);
     }
 
-    return apiRequest<Dispute>("/disputes", {
+    const token = sessionStorage.getItem("authToken");
+    
+    const response = await fetch(`${API_BASE_URL}/disputes`, {
       method: "POST",
-      headers: {},
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
       body: formData,
     });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.statusText}`);
+    }
+
+    return response.json();
   },
+
 
   updateDispute: (id: string, updates: Partial<Dispute>) =>
     apiRequest<Dispute>(`/disputes/${id}`, {

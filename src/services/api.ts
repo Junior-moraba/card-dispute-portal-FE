@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:7231/api";
+export const API_BASE_URL = "http://localhost:7231/api";
 //TODO: configure SSL
 
 export class ApiError extends Error {
