@@ -4,7 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "4173:80"
+      - "5173:80"
     container_name: card-dispute-portal
     restart: unless-stopped
     environment:

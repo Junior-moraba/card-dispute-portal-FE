@@ -50,49 +50,104 @@ npm run dev
 
 4. Open your browser and navigate to http://localhost:5173
 
-### Testting
+## Development
 
-1. Run All Tests
-   npm test
+### Run Development Server
+```bash
+npm run dev
+```
+Opens the app at http://localhost:5173
 
-2. Run Tests in Watch Mode
-   npm run test:watch
+### Build for Production
+```bash
+npm run build
+```
+Creates optimized build in `dist/` folder
 
-3. Run Tests with Coverage
-   npm run test:coverage
+### Preview Production Build
+```bash
+npm run preview
+```
+Serves the production build locally
 
-4. Type Checking
-   npm run type-check
+## Testing
 
-### Code Quality
+### Run All Tests
+```bash
+npm test
+```
 
-1. Lint code
-   npm run lint
+### Run Tests in Watch Mode
+```bash
+npm run test:watch
+```
 
-2. Format code
-   npm run format
+### Run Tests with Coverage
+```bash
+npm run test:coverage
+```
+
+### Type Checking
+```bash
+npm run type-check
+```
+
+## Code Quality
+
+### Lint Code
+```bash
+npm run lint
+```
+
+### Format Code
+```bash
+npm run format
+```
+
+### Pre-commit Hooks
+The project uses Husky for automated code quality checks:
+- Linting and formatting on commit
+- Running tests on staged files
+- Conventional commit message validation
 
 ## Docker
 
-1. Build and start
-   docker-compose up -d
+### Remove Existing Container (if exists)
+```bash
+docker rm -f card-dispute-portal
+```
 
-2. View logs
-   docker-compose logs -f
+### Build and Start
+```bash
+docker-compose up -d --build
+```
 
-3. Stop
-   docker-compose down
+### View Logs
+```bash
+docker-compose logs -f
+```
 
-4. Rebuild
-   docker-compose up -d --build
+### Stop
+```bash
+docker-compose down
+```
 
-### Project Structure
+### Rebuild (Clean)
+```bash
+docker-compose down
+docker rm -f card-dispute-portal
+docker-compose up -d --build
+```
 
+## Project Structure
+
+```
 src/
-├── components/ # Reusable UI components
-├── context/ # React context providers
-├── models/ # TypeScript interfaces
-├── pages/ # Page components
-├── services/ # API service functions
-├── utils/ # Utility functions
-└── layouts/ # Layout components
+├── components/     # Reusable UI components
+├── context/        # React context providers
+├── models/         # TypeScript interfaces
+├── pages/          # Page components
+├── services/       # API service functions
+├── utils/          # Utility functions
+└── layouts/        # Layout components
+```
