@@ -19,4 +19,12 @@ export const transactionService = {
 
   getTransaction: (id: string) =>
     apiRequest<Transaction>(`/transactions/${id}`),
+
+
+  createDummyTransactions: (userId: string) =>
+    apiRequest<void>('/transactions/create-dummy', {
+      method: 'POST',
+      body: JSON.stringify({ userId }),
+    }),
+
 };

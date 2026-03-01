@@ -148,6 +148,26 @@ function Home() {
     }
   };
 
+  const handleCreateDummyTransactions = async () => {
+    try {
+      setLoading(true);
+      await transactionService.createDummyTransactions(userId!);
+      // Refresh transactions
+      const response = await transactionService.getTransactions({
+        userId: userId!,
+        page: 1,
+        limit: 10,
+        sortBy: "date",
+        sortOrder: "desc",
+      });
+      setTransactions(response.data);
+    } catch (error) {
+      setError("Failed to create transactions");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen w-full flex items-center justify-center">
@@ -166,16 +186,21 @@ function Home() {
 
 if (!transactions.items || transactions.items.length === 0) {
   return (
-    <div className="min-h-screen w-full flex flex-col items-center gap-4">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center gap-4">
       <p className="text-5xl font-bold">Card Dispute Portal</p>
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
         <p className="text-xl text-gray-700 mb-2">No Transactions Found</p>
-        <p className="text-gray-600">You don't have any transactions yet.</p>
+        <p className="text-gray-600 mb-4">You don't have any transactions yet.</p>
+        <button
+          onClick={handleCreateDummyTransactions}
+          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+        >
+          Create Transactions
+        </button>
       </div>
     </div>
   );
 }
-
 
 
   return (
