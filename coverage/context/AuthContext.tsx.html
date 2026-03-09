@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.13% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>62/91</span>
+                <span class='fraction'>64/96</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.85% </span>
+                <span class="strong">66.29% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>57/84</span>
+                <span class='fraction'>59/89</span>
             </div>
         
             
@@ -247,7 +247,15 @@
 <a name='L182'></a><a href='#L182'>182</a>
 <a name='L183'></a><a href='#L183'>183</a>
 <a name='L184'></a><a href='#L184'>184</a>
-<a name='L185'></a><a href='#L185'>185</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -308,6 +316,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -325,13 +334,16 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -388,6 +400,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -441,6 +455,7 @@
 } from "react";
 import { authService } from "../services/authService";
 import type { AuthResponse } from "../models/AuthObjects";
+import { logger } from "../services/logger";
 &nbsp;
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -489,6 +504,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) =&gt; {
   const [isLoading, setIsLoading] = useState(true);
 &nbsp;
   const logout = useCallback(async () =&gt; {
+    logger.info('User Logout', { userId: sessionStorage.getItem('userId') });
     try {
       const refreshToken = sessionStorage.getItem("refreshToken");
       await authService.logout(refreshToken || undefined);
@@ -506,7 +522,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) =&gt; {
   }, []);
 &nbsp;
   const refreshToken = useCallback(<span class="fstat-no" title="function not covered" >async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >     logger.debug('Token Refresh Attempt');</span>
 <span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      logger.info('Token Refresh Success');</span>
       const refreshTokenValue = <span class="cstat-no" title="statement not covered" >sessionStorage.getItem("refreshToken");</span>
 <span class="cstat-no" title="statement not covered" >      if (!refreshTokenValue) <span class="cstat-no" title="statement not covered" >throw new Error("No refresh token");</span></span>
 &nbsp;
@@ -516,6 +534,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) =&gt; {
 <span class="cstat-no" title="statement not covered" >        sessionStorage.setItem("refreshToken", response.data.refreshToken);</span>
       }
     } catch (error) {
+<span class="cstat-no" title="statement not covered" >      logger.error('Token Refresh Failed', error);</span>
 <span class="cstat-no" title="statement not covered" >      console.error("Token refresh failed:", error);</span>
 <span class="cstat-no" title="statement not covered" >      logout();</span>
     }
@@ -572,6 +591,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) =&gt; {
     userId: string,
     refreshToken?: string,
   ) =&gt; {
+&nbsp;
+    logger.info('User Login', { userId, phone: phone.slice(-4) }); 
     setIsAuthenticated(true);
     setPhoneNumber(phone);
     setUserId(userId);
@@ -622,7 +643,7 @@ export const useAuth = () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-26T18:48:01.246Z
+                at 2026-03-09T21:30:46.886Z
             </div>
         <script src="../prettify.js"></script>
         <script>

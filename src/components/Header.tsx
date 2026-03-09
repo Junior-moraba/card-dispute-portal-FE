@@ -92,7 +92,7 @@ const Header: React.FC<HeaderProps> = ({
       {/* Overlay */}
       {isMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsMenuOpen(false)}
         />
       )}
