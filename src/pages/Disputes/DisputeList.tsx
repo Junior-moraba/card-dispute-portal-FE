@@ -13,6 +13,8 @@ import {
   Clock,
   XCircle,
   EyeIcon,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import Spinner from "../../components/Spinner";
 
@@ -26,6 +28,7 @@ export default function DisputeList() {
   const { userId } = useAuth();
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [isLegendOpen, setIsLegendOpen] = useState(false);
 
   const timelineSteps = Object.entries(DisputeStatus).map(([key, value]) => ({
     status: key,
@@ -182,6 +185,46 @@ export default function DisputeList() {
           unresolved disputes.
         </p>
       </div>
+
+       {/* Collapsible Status Legend */}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg mb-4">
+        <button
+          onClick={() => setIsLegendOpen(!isLegendOpen)}
+          className="w-full flex items-center justify-between p-4 hover:bg-gray-100 transition-colors"
+        >
+          <h3 className="text-sm font-semibold text-gray-700">Status Legend</h3>
+          {isLegendOpen ? (
+            <ChevronUp className="w-5 h-5 text-gray-600" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-gray-600" />
+          )}
+        </button>
+
+       {isLegendOpen && (
+          <div className="px-4 pb-4">
+            <div className="flex flex-wrap gap-6">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-sm text-gray-700">Completed Step</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-sm text-gray-700">Current Step</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-gray-500" />
+                </div>
+                <span className="text-sm text-gray-700">Pending Step</span>
+              </div>
+            </div>
+          </div>
+        )}
+        </div>
 
       <div className="space-y-4">
         {disputeData.data.items.map((dispute) => (
