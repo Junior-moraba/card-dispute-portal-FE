@@ -1,7 +1,6 @@
 /// <reference types="node" />
 import { PactV4 } from '@pact-foundation/pact';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import * as api from '../api';
 import { transactionService } from '../transactionService';
 
 const provider = new PactV4({
@@ -9,7 +8,7 @@ const provider = new PactV4({
   provider: 'transaction-service',
 });
 
-const mockSessionStorage = {
+const mockStorage = {
   getItem: vi.fn((key: string) => {
     if (key === 'userId') return 'user-123';
     if (key === 'authToken') return 'test-token';
@@ -22,7 +21,8 @@ const mockSessionStorage = {
   length: 0,
 };
 
-global.sessionStorage = mockSessionStorage as Storage;
+global.sessionStorage = mockStorage as Storage;
+global.localStorage = mockStorage as Storage;
 global.window = {
   location: {
     href: 'http://localhost:5173',
@@ -31,6 +31,8 @@ global.window = {
 global.performance = {
   now: () => Date.now(),
 } as any;
+
+const originalFetch = global.fetch;
 
 describe('Transaction Service Contract', () => {
   beforeEach(() => {
@@ -68,10 +70,16 @@ describe('Transaction Service Contract', () => {
         });
       })
       .executeTest(async (mockServer) => {
-        vi.spyOn(api, 'API_BASE_URL', 'get').mockReturnValue(mockServer.url);
+        global.fetch = ((url: string, options: any) => {
+          const newUrl = url.replace('http://localhost:7231/api', mockServer.url);
+          return originalFetch(newUrl, options);
+        }) as any;
+
         const result = await transactionService.getTransactions({ userId: 'user-123' });
         expect(result.success).toBe(true);
         expect(result.data.items).toHaveLength(1);
+
+        global.fetch = originalFetch;
       });
   });
 
@@ -93,9 +101,15 @@ describe('Transaction Service Contract', () => {
         });
       })
       .executeTest(async (mockServer) => {
-        vi.spyOn(api, 'API_BASE_URL', 'get').mockReturnValue(mockServer.url);
+        global.fetch = ((url: string, options: any) => {
+          const newUrl = url.replace('http://localhost:7231/api', mockServer.url);
+          return originalFetch(newUrl, options);
+        }) as any;
+
         const result = await transactionService.getTransaction('txn-1');
         expect(result.id).toBe('txn-1');
+
+        global.fetch = originalFetch;
       });
   });
 });

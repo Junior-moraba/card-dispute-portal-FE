@@ -1,0 +1,118 @@
+{
+  "consumer": {
+    "name": "card-dispute-portal"
+  },
+  "interactions": [
+    {
+      "description": "a request for transaction by id",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "transaction txn-1 exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/transactions/txn-1"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "amount": 150,
+            "currency": "ZAR",
+            "date": "2024-01-15T10:30:00Z",
+            "id": "txn-1",
+            "merchant": {
+              "category": "Retail",
+              "name": "Store"
+            },
+            "reference": "REF-001",
+            "status": "Completed"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request for transaction list",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "transactions exist for user"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "userId": "user-123"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "method": "POST",
+        "path": "/transactions/list"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "data": {
+              "items": [
+                {
+                  "amount": 150,
+                  "currency": "ZAR",
+                  "date": "2024-01-15T10:30:00Z",
+                  "id": "txn-1",
+                  "merchant": {
+                    "category": "Retail",
+                    "name": "Store"
+                  },
+                  "reference": "REF-001",
+                  "status": "Completed"
+                }
+              ],
+              "page": 1,
+              "returnedCount": 1,
+              "totalCount": 1,
+              "totalPages": 1
+            },
+            "success": true
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.28",
+      "models": "1.3.5"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  },
+  "provider": {
+    "name": "transaction-service"
+  }
+}
