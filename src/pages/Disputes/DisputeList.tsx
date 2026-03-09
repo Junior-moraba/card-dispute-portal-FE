@@ -15,6 +15,7 @@ import {
   EyeIcon,
   ChevronUp,
   ChevronDown,
+  AlertCircle,
 } from "lucide-react";
 import Spinner from "../../components/Spinner";
 
@@ -29,6 +30,8 @@ export default function DisputeList() {
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isLegendOpen, setIsLegendOpen] = useState(false);
+  const [showEscalateModal, setShowEscalateModal] = useState(false);
+  const [selectedDisputeId, setSelectedDisputeId] = useState<string | null>(null);
 
   const timelineSteps = Object.entries(DisputeStatus).map(([key, value]) => ({
     status: key,
@@ -106,8 +109,13 @@ export default function DisputeList() {
   };
 
   const handleEscalate = (disputeId: string) => {
-    console.log("Escalating dispute:", disputeId);
-    // TODO: Implement escalation API call
+    setSelectedDisputeId(disputeId);
+    setShowEscalateModal(true);
+  };
+
+  const closeModal = () => {
+    setShowEscalateModal(false);
+    setSelectedDisputeId(null);
   };
 
   if (loading) {
@@ -358,6 +366,34 @@ export default function DisputeList() {
           Next
         </button>
       </div>
+      {showEscalateModal && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm bg-opacity-150 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <AlertCircle className="w-6 h-6 text-orange-500 shrink-0 mt-1" />
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Escalation Feature
+                </h3>
+                <p className="text-gray-600 mb-4">
+                 Feature is currently under development and will be available soon.
+                </p>
+                <p className="text-sm text-gray-500">
+                  Please contact customer support directly if you need immediate assistance with this dispute.
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={closeModal}
+                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-semibold"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
