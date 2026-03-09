@@ -16,6 +16,7 @@ import { transactionService } from "../../services/transactionService";
 import { disputeService } from "../../services/disputeService";
 import { useAuth } from "../../context/AuthContext";
 import Spinner from "../../components/Spinner";
+import ErrorModal from "../../components/ErrorModal";
 
 function Home() {
   const [transactions, setTransactions] = useState<TransactionListData>(
@@ -32,6 +33,10 @@ function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<"date" | "amount">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [pendingDisputeData, setPendingDisputeData] = useState<DisputeFormData | null>(null);
+
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -118,14 +123,13 @@ function Home() {
 
         const disputeRequest = {
           userId,
-          transactionId: selectedTransaction.id,
+          transactionId: selectedTransaction.id+5,
           reasonCode: formData.reasonCode as DisputeReason,
           details: formData.details,
           evidence: formData.evidenceFiles?.[0],
         };
 
-        const createdDispute =
-          await disputeService.createDispute(disputeRequest);
+        const createdDispute = await disputeService.createDispute(disputeRequest);
 
         setDisputes([...disputes, createdDispute]);
         setTransactions({
@@ -138,15 +142,33 @@ function Home() {
         });
         setSelectedTransaction(null);
         setShowSuccess(true);
+        setRetryCount(0);
+        setPendingDisputeData(null);
         setTimeout(() => setShowSuccess(false), 3000);
       } catch (error) {
-        setError("Failed to submit dispute");
+        setPendingDisputeData(formData);
+        setShowErrorModal(true);
         console.error("Error submitting dispute:", error);
       } finally {
         setLoading(false);
       }
     }
   };
+
+  const handleRetryDispute = () => {
+    setRetryCount(retryCount + 1);
+    setShowErrorModal(false);
+    if (pendingDisputeData) {
+      handleSubmitDispute(pendingDisputeData);
+    }
+  };
+
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+    setRetryCount(0);
+    setPendingDisputeData(null);
+  };
+
 
   const handleCreateDummyTransactions = async () => {
     try {
@@ -228,6 +250,15 @@ if (!transactions.items || transactions.items.length === 0) {
           onSort={handleSort}
           sortBy={sortBy}
           sortOrder={sortOrder}
+        />
+      )}
+
+      {showErrorModal && (
+        <ErrorModal
+          onRetry={handleRetryDispute}
+          onClose={handleCloseErrorModal}
+          retryCount={retryCount}
+          maxRetries={2}
         />
       )}
     </div>

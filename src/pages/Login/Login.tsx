@@ -11,6 +11,11 @@ export default function Login() {
   const { login, sendOtp, verifyOtp } = useAuth();
   const { goHome } = useNavigation();
 
+  const isValidSANumber = (phone: string) => {
+    return phone.length === 10 && /^0[6-8][0-9]{8}$/.test(phone);
+  };
+
+
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -65,7 +70,7 @@ export default function Login() {
                 id="phone"
                 type="tel"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
                 placeholder="0812345678"
                 pattern="[0-9]{10}"
                 required
@@ -76,7 +81,7 @@ export default function Login() {
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading  || !isValidSANumber(phoneNumber)}
               className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:opacity-50"
             >
               {loading ? "Sending..." : "Send OTP"}
@@ -106,7 +111,7 @@ export default function Login() {
             </div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading  || otp.length < 6}
               className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:opacity-50"
             >
               {loading ? "Verifying..." : "Verify OTP"}
