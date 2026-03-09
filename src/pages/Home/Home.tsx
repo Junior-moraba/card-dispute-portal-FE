@@ -17,6 +17,9 @@ import { disputeService } from "../../services/disputeService";
 import { useAuth } from "../../context/AuthContext";
 import Spinner from "../../components/Spinner";
 import ErrorModal from "../../components/ErrorModal";
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { usePerformanceMonitor } from '../../hooks/usePerformanceMonitor';
+import { logger } from '../../services/logger';
 
 function Home() {
   const [transactions, setTransactions] = useState<TransactionListData>(
@@ -36,7 +39,13 @@ function Home() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [pendingDisputeData, setPendingDisputeData] = useState<DisputeFormData | null>(null);
+  const { trackEvent, trackPageView } = useAnalytics();
+  usePerformanceMonitor('Home');
 
+
+  useEffect(() => {
+    trackPageView('Home');
+  }, [trackPageView]);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -112,18 +121,27 @@ function Home() {
     }
   };
 
-  const handleDispute = (transaction: Transaction) => {
+   const handleDispute = (transaction: Transaction) => {
+    trackEvent('Dispute Initiated', {
+      transactionId: transaction.id,
+      amount: transaction.amount,
+    });
     setSelectedTransaction(transaction);
   };
 
+
   const handleSubmitDispute = async (formData: DisputeFormData) => {
+    logger.info('Dispute Submission Started', {
+      transactionId: selectedTransaction?.id,
+      reasonCode: formData.reasonCode,
+    });
     if (selectedTransaction && formData.reasonCode !== "" && userId) {
       try {
         setLoading(true);
 
         const disputeRequest = {
           userId,
-          transactionId: selectedTransaction.id+5,
+          transactionId: selectedTransaction.id,
           reasonCode: formData.reasonCode as DisputeReason,
           details: formData.details,
           evidence: formData.evidenceFiles?.[0],
@@ -145,7 +163,14 @@ function Home() {
         setRetryCount(0);
         setPendingDisputeData(null);
         setTimeout(() => setShowSuccess(false), 3000);
+        logger.info('Dispute Submission Success');
       } catch (error) {
+        logger.error('Dispute Submission Failed', error, {
+          transactionId: selectedTransaction?.id,
+        });
+        trackEvent('Dispute Submission Failed', {
+          transactionId: selectedTransaction?.id,
+        });
         setPendingDisputeData(formData);
         setShowErrorModal(true);
         console.error("Error submitting dispute:", error);

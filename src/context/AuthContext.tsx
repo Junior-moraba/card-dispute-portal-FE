@@ -8,6 +8,7 @@ import {
 } from "react";
 import { authService } from "../services/authService";
 import type { AuthResponse } from "../models/AuthObjects";
+import { logger } from "../services/logger";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -56,6 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const logout = useCallback(async () => {
+    logger.info('User Logout', { userId: sessionStorage.getItem('userId') });
     try {
       const refreshToken = sessionStorage.getItem("refreshToken");
       await authService.logout(refreshToken || undefined);
@@ -73,7 +75,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const refreshToken = useCallback(async () => {
+     logger.debug('Token Refresh Attempt');
     try {
+      logger.info('Token Refresh Success');
       const refreshTokenValue = sessionStorage.getItem("refreshToken");
       if (!refreshTokenValue) throw new Error("No refresh token");
 
@@ -83,6 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         sessionStorage.setItem("refreshToken", response.data.refreshToken);
       }
     } catch (error) {
+      logger.error('Token Refresh Failed', error);
       console.error("Token refresh failed:", error);
       logout();
     }
@@ -139,6 +144,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     userId: string,
     refreshToken?: string,
   ) => {
+
+    logger.info('User Login', { userId, phone: phone.slice(-4) }); 
     setIsAuthenticated(true);
     setPhoneNumber(phone);
     setUserId(userId);

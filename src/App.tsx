@@ -7,6 +7,7 @@ import Home from "./pages/Home/Home";
 import MainLayout from "./layouts/MainLayout";
 import DisputeList from "./pages/Disputes/DisputeList";
 import About from "./pages/About/About";
+import { DebugPanel } from "./components/DebugPanel";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           />
         </Route>
       </Routes>
+      <DebugPanel />
     </AuthProvider>
   );
 }
